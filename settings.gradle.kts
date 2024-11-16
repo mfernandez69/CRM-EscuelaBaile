@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "CRM_EscuelaBaile"
+rootProject.name = "CRM-EscuelaBaile"
 include(":app")
  
