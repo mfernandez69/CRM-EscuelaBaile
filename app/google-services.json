@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "178908929279",
+    "project_id": "crm-escuelabaile",
+    "storage_bucket": "crm-escuelabaile.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:178908929279:android:d1ff8fa33be5f20de140ca",
+        "android_client_info": {
+          "package_name": "com.example.crm_escuelabaile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyApbgpz5uRFBjl6EvQV4EF4zKs3ISRkSRo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
