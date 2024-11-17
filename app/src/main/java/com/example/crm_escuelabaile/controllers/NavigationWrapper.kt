@@ -4,17 +4,19 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.crm_escuelabaile.screens.PantallaDePrueba
-import com.example.crm_escuelabaile.screens.PantallaSecundaria
+import com.example.crm_escuelabaile.screens.*
 
 @Composable
 fun NavigationWrapper(navHostController: NavHostController) {
-    NavHost(navController = navHostController, startDestination = "pantallaDePrueba") {
+    NavHost(navController = navHostController, startDestination = "pantallaInicioSesion") {
         composable("pantallaDePrueba") {
             PantallaDePrueba(navHostController)
         }
         composable("pantallaSecundaria") {
             PantallaSecundaria(navHostController)
+        }
+        composable("pantallaInicioSesion") {
+            PantallaInicioSesion(navHostController)
         }
     }
 }
