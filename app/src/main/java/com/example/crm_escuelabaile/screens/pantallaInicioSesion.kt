@@ -13,7 +13,11 @@ import com.example.crm_escuelabaile.controllers.LogicaInicioSesion
 import com.example.crm_escuelabaile.models.EstadoInicioSesion
 
 @Composable
-fun PantallaInicioSesion(navController: NavHostController, logicaInicioSesion: LogicaInicioSesion = viewModel()) {
+fun PantallaInicioSesion(
+    navController: NavHostController,
+    logicaInicioSesion: LogicaInicioSesion = viewModel()
+) {
+    //Se utilizan collectAsState() para observar los cambios en el ViewModel.
     val email by logicaInicioSesion.email.collectAsState()
     val password by logicaInicioSesion.password.collectAsState()
     val estadoInicioSesion by logicaInicioSesion.estadoInicioSesion.collectAsState()
@@ -27,6 +31,7 @@ fun PantallaInicioSesion(navController: NavHostController, logicaInicioSesion: L
     ) {
         OutlinedTextField(
             value = email,
+            //Pasamos el valor del email en el input a la funcion de la logica
             onValueChange = { logicaInicioSesion.onEmailChange(it) },
             label = { Text("EMAIL") },
             shape = RoundedCornerShape(16.dp),
@@ -52,6 +57,8 @@ fun PantallaInicioSesion(navController: NavHostController, logicaInicioSesion: L
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = when (estadoInicioSesion) {
+                //Aqui definimos el texto de cada estado del inicio de sesion
+                //El texto que aparezca depende de la logica del inicio de sesion
                 EstadoInicioSesion.INICIAL -> ""
                 EstadoInicioSesion.CARGANDO -> "Iniciando sesión..."
                 EstadoInicioSesion.EXITO -> "Inicio de sesión exitoso"
@@ -64,8 +71,9 @@ fun PantallaInicioSesion(navController: NavHostController, logicaInicioSesion: L
             }
         )
     }
-
+    //Despues de las consecuencias de cambiar los atributos del estadoInicioSesion lanzamos el LaunchedEfect
     LaunchedEffect(estadoInicioSesion) {
+        //Si el estado del inicio de sesion es igual a exito (campos correctos),mandamos al usuario a pantallaDePrueba
         if (estadoInicioSesion == EstadoInicioSesion.EXITO) {
             navController.navigate("pantallaDePrueba")
         }

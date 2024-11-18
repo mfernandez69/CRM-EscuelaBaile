@@ -17,12 +17,16 @@ import kotlinx.coroutines.tasks.await
 class LogicaInicioSesion : ViewModel() {
     val auth: FirebaseAuth = Firebase.auth
 
+    //Utilizamos StateFlow para manejar el estado de la UI de manera reactiva.
+    //_email es una variable de tipo MutableStateFlow() ya que su valor puede variar con el tiempo
     private val _email = MutableStateFlow("")
+    //.asStateFlow() permite que sean observadas desde fuera de la clase, pero no modificadas directamente
     val email: StateFlow<String> = _email.asStateFlow()
 
     private val _password = MutableStateFlow("")
     val password: StateFlow<String> = _password.asStateFlow()
 
+    //Iniciamos el _estadoInicioSesion como inicial y en el view definimos que es una cadena vacia
     private val _estadoInicioSesion = MutableStateFlow(EstadoInicioSesion.INICIAL)
     val estadoInicioSesion: StateFlow<EstadoInicioSesion> = _estadoInicioSesion.asStateFlow()
 
