@@ -55,6 +55,16 @@ fun PantallaInicioSesion(
             Text(text = "Iniciar Sesión")
         }
         Spacer(modifier = Modifier.height(8.dp))
+        Button(
+            onClick = {
+                navController.navigate("pantallaRegistro")
+            }
+        ) {
+            Text(
+                text = "Registrarse"
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = when (estadoInicioSesion) {
                 //Aqui definimos el texto de cada estado del inicio de sesion
@@ -70,12 +80,13 @@ fun PantallaInicioSesion(
                 else -> MaterialTheme.colorScheme.onSurface
             }
         )
+
     }
     //Despues de las consecuencias de cambiar los atributos del estadoInicioSesion lanzamos el LaunchedEfect
     LaunchedEffect(estadoInicioSesion) {
         //Si el estado del inicio de sesion es igual a exito (campos correctos),mandamos al usuario a pantallaDePrueba
         if (estadoInicioSesion == EstadoInicioSesion.EXITO) {
-            navController.navigate("pantallaDePrueba")
+            navController.navigate("pantallaPrincipal")
         }
     }
 }
