@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crm_escuelabaile.models.Notificacion
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -54,7 +55,8 @@ class NotificacionViewModel : ViewModel() {
         val coleccion = db.collection("notificacion")
 
         return try {
-            val querySnapshot = coleccion.get().await()
+            //Hacemos el select en firebase ordenando las notificaciones segun la fecha (de mas reciente a más antigua)
+            val querySnapshot = coleccion.orderBy("fecha", Query.Direction.DESCENDING).get().await()
             //Igualamos una array a los resultados obtenidos transformandolos en objetos Notificacion
             val notificaciones = querySnapshot.toObjects(Notificacion::class.java)
             Log.d("NotificacionViewModel", "Notificaciones obtenidas de Firestore: ${notificaciones.size}")
