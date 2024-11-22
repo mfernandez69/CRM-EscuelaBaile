@@ -30,11 +30,13 @@ class NotificacionViewModel : ViewModel() {
     }
 
     private suspend fun getNotificaciones(): List<Notificacion> {
+        //Esta funcion realiza una peticion a firebase y devuelve una Lista con los objetos Notificacion
         val db = FirebaseFirestore.getInstance()
         val coleccion = db.collection("notificacion")
 
         return try {
             val querySnapshot = coleccion.get().await()
+            //Igualamos una array a los resultados obtenidos transformandolos en objetos Notificacion
             val notificaciones = querySnapshot.toObjects(Notificacion::class.java)
             Log.d("NotificacionViewModel", "Notificaciones obtenidas de Firestore: ${notificaciones.size}")
             notificaciones

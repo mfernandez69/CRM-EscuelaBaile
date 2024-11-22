@@ -23,6 +23,9 @@ import androidx.navigation.NavHostController
 import com.example.crm_escuelabaile.models.Notificacion
 import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
+import com.google.firebase.Timestamp
 
 @Composable
 fun PantallaPrincipal(
@@ -46,12 +49,15 @@ fun PantallaPrincipal(
         if (notificaciones.isEmpty()) {
             Text("Cargando notificaciones o lista vacía...", Modifier.padding(16.dp))
         } else {
+            //Si hay notificaciones mostramos un lazyColumn con todas ellas
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)
             ) {
+                //Cada objeto del column es una notificacion
                 items(notificaciones) { notificacion ->
+                    //Definimos como se muestra cada notificacion mediante esta funcion
                     NotificacionItem(notificacion)
                 }
             }
@@ -60,6 +66,11 @@ fun PantallaPrincipal(
 }
 @Composable
 fun NotificacionItem(notificacion: Notificacion) {
+    //Creamos una card para cada notificacion con la info del objeto
+    val fechaFormateada = notificacion.fecha?.let { timestamp ->
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        sdf.format(timestamp.toDate())
+    } ?: "Sin fecha"
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -77,7 +88,7 @@ fun NotificacionItem(notificacion: Notificacion) {
             Text(text = notificacion.email ?: "Sin título")
             Text(text = notificacion.telefono ?: "Sin descripción")
             Text(
-                text = "Fecha: ${notificacion.fecha?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) ?: "Sin fecha"}"
+                text = "Fecha: $fechaFormateada"
             )
         }
     }
