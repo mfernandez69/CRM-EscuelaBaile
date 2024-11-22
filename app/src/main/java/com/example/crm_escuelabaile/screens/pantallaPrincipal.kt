@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -134,7 +135,7 @@ fun NotificacionesNoLeidasScreen(notificacionViewModel: NotificacionViewModel) {
                 .padding(16.dp)
         ) {
             items(notificacionesNoLeidas) { notificacion ->
-                NotificacionItem(notificacion)
+                NotificacionItem(notificacion, notificacionViewModel)
             }
         }
     }
@@ -153,13 +154,13 @@ fun NotificacionesLeidasScreen(notificacionViewModel: NotificacionViewModel) {
                 .padding(16.dp)
         ) {
             items(notificacionesLeidas) { notificacion ->
-                NotificacionItem(notificacion)
+                NotificacionItem(notificacion, notificacionViewModel)
             }
         }
     }
 }
 @Composable
-fun NotificacionItem(notificacion: Notificacion) {
+fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: NotificacionViewModel) {
     //Creamos una card para cada notificacion con la info del objeto
     val fechaFormateada = notificacion.fecha?.let { timestamp ->
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -181,9 +182,14 @@ fun NotificacionItem(notificacion: Notificacion) {
             Text(text = notificacion.descripcion ?: "Sin descripción")
             Text(text = notificacion.email ?: "Sin título")
             Text(text = notificacion.telefono ?: "Sin descripción")
-            Text(
-                text = "Fecha: $fechaFormateada"
-            )
+            Text(text = "Fecha: $fechaFormateada")
+            Button(
+                onClick = {
+                    notificacionViewModel.marcarLeido(notificacion)
+                }
+            ){
+                Text(text = notificacionViewModel.leidaNoLeida(notificacion))
+            }
         }
     }
 }

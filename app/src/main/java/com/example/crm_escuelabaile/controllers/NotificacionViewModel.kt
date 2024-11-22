@@ -1,4 +1,9 @@
 import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crm_escuelabaile.models.Notificacion
@@ -59,4 +64,36 @@ class NotificacionViewModel : ViewModel() {
             emptyList()
         }
     }
+
+    public fun marcarLeido(notificacion: Notificacion){
+        val db = FirebaseFirestore.getInstance()
+        val coleccion = db.collection("notificacion")
+        try {
+            val notificacionDocument = coleccion.document(notificacion.id)
+
+            if(notificacion.leida){
+                notificacion.leida = false
+                notificacionDocument.update("leida", false)
+            }
+            else {
+                notificacion.leida = true
+                notificacionDocument.update("leida", true)
+            }
+        } catch (e: Exception) {
+            Log.e("NotificacionViewModel", "Error al obtener documento de Firestore", e)
+        }
+    }
+
+    @Composable
+    public fun leidaNoLeida(notificacion: Notificacion): String{
+        var textoNotificacion = "";
+        if (notificacion.leida){
+            textoNotificacion = "Marcar como no leida"
+        }
+        else{
+            textoNotificacion = "Marcar como leida"
+        }
+        return textoNotificacion
+    }
+
 }
