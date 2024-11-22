@@ -8,5 +8,6 @@ data class Notificacion(
     val descripcion: String = "",
     val email: String = "",
     val telefono: String = "",
-    val fecha: Timestamp? = null
+    val fecha: Timestamp? = null,
+    val leida :Boolean = false
 )

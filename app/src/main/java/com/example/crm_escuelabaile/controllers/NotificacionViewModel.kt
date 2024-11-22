@@ -12,6 +12,15 @@ class NotificacionViewModel : ViewModel() {
     private val _notificaciones = MutableStateFlow<List<Notificacion>>(emptyList())
     val notificaciones: StateFlow<List<Notificacion>> = _notificaciones
 
+    private val _notificacionesNoLeidas = MutableStateFlow<List<Notificacion>>(emptyList())
+    val notificacionesNoLeidas: StateFlow<List<Notificacion>> = _notificacionesNoLeidas
+
+    private val _notificacionesLeidas = MutableStateFlow<List<Notificacion>>(emptyList())
+    val notificacionesLeidas: StateFlow<List<Notificacion>> = _notificacionesLeidas
+
+    private val _cantidadNotificacionesNoLeidas = MutableStateFlow(0)
+    val cantidadNotificacionesNoLeidas: StateFlow<Int> = _cantidadNotificacionesNoLeidas
+
     init {
         Log.d("NotificacionViewModel", "Inicializando ViewModel")
         cargarNotificaciones()
@@ -22,7 +31,12 @@ class NotificacionViewModel : ViewModel() {
             try {
                 val notificacionesObtenidas = getNotificaciones()
                 _notificaciones.value = notificacionesObtenidas
+                val noLeidas = notificacionesObtenidas.filter { !it.leida }
+                _notificacionesNoLeidas.value = noLeidas
+                _notificacionesLeidas.value = notificacionesObtenidas.filter { it.leida }
+                _cantidadNotificacionesNoLeidas.value = noLeidas.size
                 Log.d("NotificacionViewModel", "Notificaciones cargadas: ${notificacionesObtenidas.size}")
+                Log.d("NotificacionViewModel", "Notificaciones no leídas: ${noLeidas.size}")
             } catch (e: Exception) {
                 Log.e("NotificacionViewModel", "Error al cargar notificaciones", e)
             }

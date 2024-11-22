@@ -1,23 +1,35 @@
 package com.example.crm_escuelabaile.screens
 
 import NotificacionViewModel
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.crm_escuelabaile.models.Notificacion
@@ -26,40 +38,122 @@ import java.util.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
 import com.google.firebase.Timestamp
+import kotlinx.coroutines.launch
 
 @Composable
 fun PantallaPrincipal(
     navController: NavHostController,
     notificacionViewModel: NotificacionViewModel = viewModel()
 ) {
-    val notificaciones by notificacionViewModel.notificaciones.collectAsState()
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         Text(
             text = "Informe general de las notificaciones",
-            fontWeight = FontWeight.ExtraBold
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        if (notificaciones.isEmpty()) {
-            Text("Cargando notificaciones o lista vacía...", Modifier.padding(16.dp))
-        } else {
-            //Si hay notificaciones mostramos un lazyColumn con todas ellas
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                //Cada objeto del column es una notificacion
-                items(notificaciones) { notificacion ->
-                    //Definimos como se muestra cada notificacion mediante esta funcion
-                    NotificacionItem(notificacion)
+        NotificacionesTabLayout(notificacionViewModel)
+    }
+}
+
+@Composable
+fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
+    val pagerState = rememberPagerState(pageCount = { 2 })
+    val cantidadNoLeidas by notificacionViewModel.cantidadNotificacionesNoLeidas.collectAsState()
+    Column {
+        TabRow(
+            selectedTabIndex = pagerState.currentPage,
+            contentColor = Color.White
+        ) {
+            val scope = rememberCoroutineScope()
+
+            Tab(
+                selected = pagerState.currentPage == 0,
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(0)
+                    }
                 }
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("No leídos")
+                    if (cantidadNoLeidas > 0) {
+                        Box(
+                            modifier = Modifier
+                                .padding(start = 4.dp)
+                                .size(24.dp)
+                                .background(Color.Red, CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = cantidadNoLeidas.toString(),
+                                color = Color.White,
+                                fontSize = 12.sp
+                            )
+                        }
+                    }
+                }
+            }
+
+            Tab(
+                text = { Text("Leídos") },
+                selected = pagerState.currentPage == 1,
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(1)
+                    }
+                }
+            )
+        }
+
+        HorizontalPager(state = pagerState) { page ->
+            when (page) {
+                0 -> NotificacionesNoLeidasScreen(notificacionViewModel)
+                1 -> NotificacionesLeidasScreen(notificacionViewModel)
+            }
+        }
+    }
+}
+
+@Composable
+fun NotificacionesNoLeidasScreen(notificacionViewModel: NotificacionViewModel) {
+    val notificacionesNoLeidas by notificacionViewModel.notificacionesNoLeidas.collectAsState()
+
+    if (notificacionesNoLeidas.isEmpty()) {
+        Text("No hay notificaciones no leídas", Modifier.padding(16.dp))
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            items(notificacionesNoLeidas) { notificacion ->
+                NotificacionItem(notificacion)
+            }
+        }
+    }
+}
+
+@Composable
+fun NotificacionesLeidasScreen(notificacionViewModel: NotificacionViewModel) {
+    val notificacionesLeidas by notificacionViewModel.notificacionesLeidas.collectAsState()
+
+    if (notificacionesLeidas.isEmpty()) {
+        Text("No hay notificaciones leídas", Modifier.padding(16.dp))
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            items(notificacionesLeidas) { notificacion ->
+                NotificacionItem(notificacion)
             }
         }
     }
