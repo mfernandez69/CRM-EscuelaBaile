@@ -61,7 +61,7 @@ fun PantallaPrincipal(
 @Composable
 fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
     //La pantalla principal tiene dos estados (las opciones del tab estan enlazadas con cada estado)
-    val pagerState = rememberPagerState(pageCount = { 2 })
+    val pagerState = rememberPagerState(pageCount = { 3 })
     val cantidadNoLeidas by notificacionViewModel.cantidadNotificacionesNoLeidas.collectAsState()
     Column {
         TabRow(
@@ -110,6 +110,16 @@ fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
                     }
                 }
             )
+
+            Tab(
+                text = { Text(text="Todos",color = Color.Black) },
+                selected = pagerState.currentPage == 2,
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(2)
+                    }
+                }
+            )
         }
 
         HorizontalPager(state = pagerState) { page ->
@@ -117,6 +127,7 @@ fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
                 //Definimos que funciones se pintan dependiendo del estado del tab
                 0 -> NotificacionesNoLeidasScreen(notificacionViewModel)
                 1 -> NotificacionesLeidasScreen(notificacionViewModel)
+                2 -> NotificacionesTodasScreen(notificacionViewModel)
             }
         }
     }
@@ -159,6 +170,26 @@ fun NotificacionesLeidasScreen(notificacionViewModel: NotificacionViewModel) {
         }
     }
 }
+
+@Composable
+fun NotificacionesTodasScreen(notificacionViewModel: NotificacionViewModel){
+    val notificacionesTodas by notificacionViewModel.notificaciones.collectAsState()
+
+    if (notificacionesTodas.isEmpty()) {
+        Text("No hay notificaciones", Modifier.padding(16.dp))
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            items(notificacionesTodas) { notificacion ->
+                NotificacionItem(notificacion, notificacionViewModel)
+            }
+        }
+    }
+}
+
 @Composable
 fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: NotificacionViewModel) {
     //Creamos una card para cada notificacion con la info del objeto
@@ -178,7 +209,7 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
         ) {
             // Aquí puedes agregar los detalles de la notificación
             // Por ejemplo:
-            Text(text = notificacion.titulo ?: "Sin título")
+            Text(text = notificacion.titulo ?: "Sin título", fontWeight = FontWeight.Bold)
             Text(text = notificacion.descripcion ?: "Sin descripción")
             Text(text = notificacion.email ?: "Sin título")
             Text(text = notificacion.telefono ?: "Sin descripción")
