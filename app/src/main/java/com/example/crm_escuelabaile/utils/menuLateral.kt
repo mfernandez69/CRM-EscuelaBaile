@@ -23,10 +23,14 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.*
@@ -37,20 +41,32 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.crm_escuelabaile.R
+import com.example.crm_escuelabaile.controllers.LogicaMenu
 import kotlinx.coroutines.launch
 val colorPrimario = Color(0xFF30C67C)
 val colorSegundario =Color(0xFF82F4B1)
 val colorGris =Color(0xFF3A3737)
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuLateral(
     navController: NavHostController,
     drawerState: DrawerState,
+    logicaMenu: LogicaMenu,
     content: @Composable (PaddingValues) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     var selectedItemIndex by rememberSaveable { mutableIntStateOf(0) }
+    var searchText by remember { mutableStateOf("") }
+    val adminData by logicaMenu.adminData.collectAsState()
 
+    LaunchedEffect(Unit) {
+        logicaMenu.recogerDatosAdmin()
+    }
     val items = listOf(
         NavigationItem(
             title = "Inicio",
@@ -58,21 +74,31 @@ fun MenuLateral(
             unselectedIcon = Icons.Outlined.Home
         ),
         NavigationItem(
-            title = "Perfil",
+            title = "Pagos",
             selectedIcon = Icons.Filled.Person,
             unselectedIcon = Icons.Outlined.Person
         ),
         NavigationItem(
-            title = "Configuración",
-            selectedIcon = Icons.Filled.Settings,
-            unselectedIcon = Icons.Outlined.Settings
+            title = "Agenda",
+            selectedIcon = Icons.Filled.DateRange,
+            unselectedIcon = Icons.Outlined.DateRange
+        ),
+        NavigationItem(
+            title = "Alumnos",
+            selectedIcon = Icons.Filled.Face,
+            unselectedIcon = Icons.Outlined.Face
+        ),
+        NavigationItem(
+            title = "Cerrar sesión",
+            selectedIcon = Icons.Filled.ExitToApp,
+            unselectedIcon = Icons.Outlined.ExitToApp
         )
     )
 
     ModalNavigationDrawer(
         drawerContent = {
             ModalDrawerSheet(
-                drawerContainerColor = Color.Black,
+                drawerContainerColor = Color.White,
                 modifier = Modifier
                     .width(300.dp)
                     .clip(RoundedCornerShape(8.dp))
@@ -82,6 +108,30 @@ fun MenuLateral(
                     )
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
+                PerfilContainer(
+                    nombre = adminData.nombre,
+                    email = adminData.email,
+
+                )
+                // Buscador
+                OutlinedTextField(
+                    value = searchText,
+                    onValueChange = { searchText = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .background(Color.LightGray.copy(alpha = 0.2f), RoundedCornerShape(8.dp)),
+                    placeholder = { Text("Buscar") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Buscar") },
+                    singleLine = true,
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 items.forEachIndexed { index, item ->
                     NavigationDrawerItem(
                         label = { Text(text = item.title, color = colorPrimario) },
@@ -91,11 +141,12 @@ fun MenuLateral(
                             scope.launch {
                                 drawerState.close()
                             }
-                            // Implementar la navegación aquí
                             when (index) {
                                 0 -> navController.navigate("pantallaPrincipal")
                                 1 -> navController.navigate("")
                                 2 -> navController.navigate("pantallaAgenda")
+                                3 -> navController.navigate("")
+                                4 -> navController.navigate("")
                             }
                         },
                         icon = {
@@ -103,10 +154,15 @@ fun MenuLateral(
                                 imageVector = if (index == selectedItemIndex) {
                                     item.selectedIcon
                                 } else item.unselectedIcon,
-                                contentDescription = item.title
+                                contentDescription = item.title,
+                                tint = colorPrimario
                             )
                         },
-                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                        modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
+                        colors = NavigationDrawerItemDefaults.colors(
+                            selectedContainerColor = Color.Transparent,
+                            unselectedContainerColor = Color.Transparent
+                        )
                     )
                 }
             }
@@ -116,6 +172,40 @@ fun MenuLateral(
         content(PaddingValues())
     }
 }
+
+@Composable
+fun PerfilContainer(nombre: String, email: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.imgperfil),
+                contentDescription = "Foto de perfil del administrador",
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .border(2.dp, colorPrimario, CircleShape)
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = nombre,
+                style = MaterialTheme.typography.titleMedium,
+                color = colorPrimario
+            )
+            Text(
+                text = email,
+                style = MaterialTheme.typography.bodyMedium,
+                color = colorPrimario.copy(alpha = 0.7f)
+            )
+        }
+    }
+}
+
 //Creamos una clase para cada opcion del menu lateral
 data class NavigationItem(
     val title: String,

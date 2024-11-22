@@ -54,6 +54,7 @@ import kotlinx.coroutines.launch
 fun PantallaPrincipal(
     navController: NavHostController,
     notificacionViewModel: NotificacionViewModel = viewModel(),
+
     logicaMenu: LogicaMenu = viewModel()
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -61,7 +62,8 @@ fun PantallaPrincipal(
 
     MenuLateral(
         navController = navController,
-        drawerState = drawerState
+        drawerState = drawerState,
+        logicaMenu = logicaMenu
     ) { paddingValues ->
         Scaffold(
             topBar = {
@@ -82,7 +84,6 @@ fun PantallaPrincipal(
                 )
             }
         ) { innerPadding ->
-            // Contenido específico de la pantalla principal
             Column(
                 modifier = Modifier
                     .fillMaxSize()
