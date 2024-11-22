@@ -79,6 +79,7 @@ class NotificacionViewModel : ViewModel() {
                 notificacion.leida = true
                 notificacionDocument.update("leida", true)
             }
+            cargarNotificaciones()
         } catch (e: Exception) {
             Log.e("NotificacionViewModel", "Error al obtener documento de Firestore", e)
         }

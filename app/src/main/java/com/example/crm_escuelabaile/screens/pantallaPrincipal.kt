@@ -53,18 +53,14 @@ fun PantallaPrincipal(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Text(
-            text = "Informe general de las notificaciones",
-            fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
+        //Mostramos en la pagina un tab con uno de los estados disponibles (notificaciones leidas/no leidas)
         NotificacionesTabLayout(notificacionViewModel)
     }
 }
 
 @Composable
 fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
+    //La pantalla principal tiene dos estados (las opciones del tab estan enlazadas con cada estado)
     val pagerState = rememberPagerState(pageCount = { 2 })
     val cantidadNoLeidas by notificacionViewModel.cantidadNotificacionesNoLeidas.collectAsState()
     Column {
@@ -83,7 +79,10 @@ fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
                 }
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("No leídos")
+                    Text(
+                        text="No leídos",
+                        color = Color.Black
+                    )
                     if (cantidadNoLeidas > 0) {
                         Box(
                             modifier = Modifier
@@ -103,7 +102,7 @@ fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
             }
 
             Tab(
-                text = { Text("Leídos") },
+                text = { Text(text="Leídos",color = Color.Black) },
                 selected = pagerState.currentPage == 1,
                 onClick = {
                     scope.launch {
@@ -115,6 +114,7 @@ fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
 
         HorizontalPager(state = pagerState) { page ->
             when (page) {
+                //Definimos que funciones se pintan dependiendo del estado del tab
                 0 -> NotificacionesNoLeidasScreen(notificacionViewModel)
                 1 -> NotificacionesLeidasScreen(notificacionViewModel)
             }
