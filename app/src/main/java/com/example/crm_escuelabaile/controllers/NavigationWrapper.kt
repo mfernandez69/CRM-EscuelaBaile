@@ -18,5 +18,8 @@ fun NavigationWrapper(navHostController: NavHostController) {
         composable("pantallaRegistro") {
             PantallaRegistro(navHostController)
         }
+        composable("pantallaAgenda") {
+            PantallaAgenda(navHostController)
+        }
     }
 }
