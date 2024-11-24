@@ -1,5 +1,6 @@
 package com.example.crm_escuelabaile.utils
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -43,6 +45,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.crm_escuelabaile.R
 import com.example.crm_escuelabaile.controllers.LogicaMenu
@@ -180,28 +183,32 @@ fun PerfilContainer(nombre: String, email: String) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Image(
                 painter = painterResource(id = R.drawable.imgperfil),
                 contentDescription = "Foto de perfil del administrador",
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
                     .border(2.dp, colorPrimario, CircleShape)
             )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = nombre,
-                style = MaterialTheme.typography.titleMedium,
-                color = colorPrimario
-            )
-            Text(
-                text = email,
-                style = MaterialTheme.typography.bodyMedium,
-                color = colorPrimario.copy(alpha = 0.7f)
-            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+                Text(
+                    text = nombre,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = colorPrimario
+                )
+                Text(
+                    text = email,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = colorPrimario.copy(alpha = 0.7f)
+                )
+            }
         }
     }
 }
