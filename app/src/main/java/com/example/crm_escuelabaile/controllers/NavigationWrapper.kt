@@ -8,7 +8,7 @@ import com.example.crm_escuelabaile.screens.*
 
 @Composable
 fun NavigationWrapper(navHostController: NavHostController) {
-    NavHost(navController = navHostController, startDestination = "pantallaAgenda") {
+    NavHost(navController = navHostController, startDestination = "pantallaInicioSesion") {
         composable("pantallaInicioSesion") {
             PantallaInicioSesion(navHostController)
         }

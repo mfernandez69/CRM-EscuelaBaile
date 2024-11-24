@@ -51,4 +51,7 @@ class LogicaInicioSesion : ViewModel() {
             }
         }
     }
+    fun cerrarSesion(){
+        auth.signOut()
+    }
 }

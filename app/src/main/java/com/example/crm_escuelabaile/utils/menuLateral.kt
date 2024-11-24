@@ -40,12 +40,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import com.example.crm_escuelabaile.R
+import com.example.crm_escuelabaile.controllers.LogicaInicioSesion
 import com.example.crm_escuelabaile.controllers.LogicaMenu
 import kotlinx.coroutines.launch
 
 val colorPrimario = Color(0xFF30C67C)
-val colorSegundario =Color(0xFF82F4B1)
-val colorGris =Color(0xFF3A3737)
+val colorSegundario = Color(0xFF82F4B1)
+val colorGris = Color(0xFF3A3737)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,6 +54,7 @@ fun MenuLateral(
     navController: NavHostController,
     drawerState: DrawerState,
     logicaMenu: LogicaMenu,
+    logicaInicioSesion: LogicaInicioSesion,
     content: @Composable (PaddingValues) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -85,6 +87,11 @@ fun MenuLateral(
             unselectedIcon = Icons.Outlined.Face
         ),
         NavigationItem(
+            title = "Ajustes",
+            selectedIcon = Icons.Filled.Build,
+            unselectedIcon = Icons.Outlined.Build
+        ),
+        NavigationItem(
             title = "Cerrar sesión",
             selectedIcon = Icons.Filled.ExitToApp,
             unselectedIcon = Icons.Outlined.ExitToApp
@@ -108,7 +115,7 @@ fun MenuLateral(
                     nombre = adminData.nombre,
                     email = adminData.email,
 
-                )
+                    )
                 // Buscador
                 OutlinedTextField(
                     value = searchText,
@@ -143,6 +150,15 @@ fun MenuLateral(
                                 2 -> navController.navigate("pantallaAgenda")
                                 3 -> navController.navigate("")
                                 4 -> navController.navigate("")
+                                5 -> {
+                                    logicaInicioSesion.cerrarSesion()
+                                    navController.navigate("pantallaInicioSesion") {
+                                        //Evitamos que el usuario pueda volver a pantallas que requieren autentificacion
+                                        popUpTo(navController.graph.startDestinationId) {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
                             }
                         },
                         icon = {

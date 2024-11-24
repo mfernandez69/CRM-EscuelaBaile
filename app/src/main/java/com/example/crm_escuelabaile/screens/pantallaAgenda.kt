@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.crm_escuelabaile.controllers.LogicaAgenda
+import com.example.crm_escuelabaile.controllers.LogicaInicioSesion
 import com.example.crm_escuelabaile.controllers.LogicaMenu
 import com.example.crm_escuelabaile.models.Notificacion
 import com.example.crm_escuelabaile.models.Tarea
@@ -54,7 +55,8 @@ import com.google.firebase.Timestamp
 @Composable
 fun PantallaAgenda(
     navHostController: NavHostController,
-    logicaMenu: LogicaMenu = viewModel()
+    logicaMenu: LogicaMenu = viewModel(),
+    logicaInicioSesion: LogicaInicioSesion = viewModel()
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -62,7 +64,8 @@ fun PantallaAgenda(
     MenuLateral(
         navController = navHostController,
         drawerState = drawerState,
-        logicaMenu = logicaMenu
+        logicaMenu = logicaMenu,
+        logicaInicioSesion=logicaInicioSesion
     ) { paddingValues ->
         Scaffold(
             topBar = {
