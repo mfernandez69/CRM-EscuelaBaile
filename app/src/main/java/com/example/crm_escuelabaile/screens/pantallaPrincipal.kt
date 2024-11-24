@@ -246,8 +246,6 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Aquí puedes agregar los detalles de la notificación
-            // Por ejemplo:
             Text(text = notificacion.titulo ?: "Sin título", fontWeight = FontWeight.Bold)
             Text(text = notificacion.descripcion ?: "Sin descripción")
             Text(text = notificacion.email ?: "Sin título")
