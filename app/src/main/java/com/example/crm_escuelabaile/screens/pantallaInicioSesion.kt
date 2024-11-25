@@ -110,7 +110,7 @@ fun PantallaInicioSesion(
 
                     )
                 Button(
-                    onClick = { navController.navigate(route = "LogicainicioSesion") },
+                    onClick = { logicaInicioSesion.iniciarSesion() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Transparent // Hace el fondo del botón transparente
                     ),
