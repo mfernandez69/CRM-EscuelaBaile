@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -29,8 +30,11 @@ import java.time.Instant
 import java.time.ZoneId
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,6 +53,11 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 import com.google.firebase.Timestamp
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,7 +93,19 @@ fun PantallaAgenda(
                         }
                     }
                 )
-            }
+            },
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { /* Acción del FAB */ },
+                    containerColor = MaterialTheme.colorScheme.primary
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Agregar evento"
+                    )
+                }
+            },
+            floatingActionButtonPosition = FabPosition.End
         ) { innerPadding ->
             Column(
                 modifier = Modifier
@@ -101,8 +122,16 @@ fun PantallaAgenda(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeccionCalendario(navHostController: NavHostController, logicaAgenda: LogicaAgenda = viewModel()) {
-    val datePickerState = rememberDatePickerState()
+    // Obtener la fecha actual en milisegundos desde la época
+    val currentInstant = Clock.System.now()
+    val currentDateTime = currentInstant.toLocalDateTime(TimeZone.currentSystemDefault())
+    val millisHoy = currentDateTime.toInstant(TimeZone.currentSystemDefault()).toEpochMilliseconds()
 
+    val datePickerState = rememberDatePickerState()
+    LaunchedEffect(Unit) {
+        val fechaHoyTimestamp = Timestamp(millisHoy / 1000, 0)
+        logicaAgenda.setFechaSeleccionada(fechaHoyTimestamp)
+    }
     LaunchedEffect(datePickerState.selectedDateMillis) {
         datePickerState.selectedDateMillis?.let { millis ->
             val fecha = Timestamp(millis / 1000, 0)
@@ -162,10 +191,14 @@ fun ListaTareas(logicaAgenda: LogicaAgenda = viewModel()) {
 @Composable
 fun TareaItem(tarea: Tarea) {
     //Creamos una card para cada notificacion con la info del objeto
-    val fechaFormateada = tarea.fecha?.let { timestamp ->
+    /*val fechaFormateada = tarea.fecha?.let { timestamp ->
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         sdf.format(timestamp.toDate())
-    } ?: "Sin fecha"
+    } ?: "Sin fecha"*/
+    val horaFormateada = tarea.fecha?.let { timestamp ->
+        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+        sdf.format(timestamp.toDate())
+    } ?: "Sin hora"
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -177,9 +210,9 @@ fun TareaItem(tarea: Tarea) {
                 .padding(16.dp)
         ) {
             Text(text = tarea.nombre ?: "Sin título", fontWeight = FontWeight.Bold)
-            Text(text = tarea.descripción ?: "Sin descripción")
+            Text(text = tarea.descripcion ?: "Sin descripción")
             Text(text = tarea.ubicacion ?: "Sin ubicación")
-            Text(text = "Fecha: $fechaFormateada")
+            Text(text = "Hora: $horaFormateada")
         }
     }
 }

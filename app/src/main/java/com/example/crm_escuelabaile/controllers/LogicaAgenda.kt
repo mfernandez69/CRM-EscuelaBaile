@@ -41,6 +41,7 @@ class LogicaAgenda : ViewModel() {
             try {
                 val tareasObtenidas = getTareas()
                 _tareasDelDia.value = tareasObtenidas
+                Log.d("LogicaAgenda", "Tareas:${tareasObtenidas}")
             } catch (e: Exception) {
                 Log.e("LogicaAgenda", "Error al cargar las tareas", e)
             }
@@ -55,17 +56,24 @@ class LogicaAgenda : ViewModel() {
 
         return try {
             if (email != null) {
-                val query = coleccion.whereEqualTo("email", email)
+                var query = coleccion.whereEqualTo("email", email)
                 _fechaSeleccionada.value?.let { fecha ->
-                    // Crear un rango de fechas para el día seleccionado
-                    val inicioDia = fecha.toDate().toInstant().atZone(ZoneId.systemDefault()).withHour(0).withMinute(0).withSecond(0).toInstant()
-                    val finDia = fecha.toDate().toInstant().atZone(ZoneId.systemDefault()).withHour(23).withMinute(59).withSecond(59).toInstant()
+                    // Convertir el Timestamp a ZonedDateTime para manejar correctamente la zona horaria
+                    val zonedDateTime = fecha.toDate().toInstant().atZone(ZoneId.systemDefault())
+                    val inicioDia = zonedDateTime.withHour(0).withMinute(0).withSecond(0).withNano(0)
+                    val finDia = zonedDateTime.withHour(23).withMinute(59).withSecond(59).withNano(999999999)
 
-                    query.whereGreaterThanOrEqualTo("fecha", Timestamp(inicioDia.epochSecond, 0))
-                        .whereLessThanOrEqualTo("fecha", Timestamp(finDia.epochSecond, 999999999))
+                    Log.e("LogicaAgenda", "Inicio dia: $inicioDia")
+                    Log.e("LogicaAgenda", "Fin dia: $finDia")
+                    Log.e("LogicaAgenda", "Tiempo seleccionado: ${_fechaSeleccionada.value}")
+
+                    // Encadenar correctamente las condiciones de la consulta
+                    query = query.whereGreaterThanOrEqualTo("fecha", Timestamp(inicioDia.toEpochSecond(), inicioDia.nano))
+                        .whereLessThanOrEqualTo("fecha", Timestamp(finDia.toEpochSecond(), finDia.nano))
                 }
+
                 val querySnapshot = query.get().await()
-                querySnapshot.toObjects(Tarea::class.java)
+                return querySnapshot.toObjects(Tarea::class.java)
             } else {
                 Log.e("LogicaAgenda", "Email del usuario es null")
                 emptyList()
