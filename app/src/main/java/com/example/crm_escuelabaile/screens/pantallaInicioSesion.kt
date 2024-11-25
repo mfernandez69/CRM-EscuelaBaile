@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -31,7 +28,6 @@ import com.example.crm_escuelabaile.R
 import com.example.crm_escuelabaile.controllers.LogicaInicioSesion
 import com.example.crm_escuelabaile.models.EstadoInicioSesion
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaInicioSesion(
     navController: NavHostController,
@@ -73,60 +69,25 @@ fun PantallaInicioSesion(
 
             TextField(
                 value = email,
+                //Pasamos el valor del email en el input a la funcion de la logica
                 onValueChange = { logicaInicioSesion.onEmailChange(it) },
                 label = { Text("EMAIL") },
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Person, // Cambia este ícono según lo necesites
-                        contentDescription = "Icono de validación",
-                        tint = Color.Black // Color del ícono
-                    )
-                },
                 shape = RoundedCornerShape(30.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
                 modifier = Modifier
                     .width(300.dp)
-                    .shadow(
-                        elevation = 8.dp,
-                        shape = RoundedCornerShape(30.dp),
-                        clip = false
-                    )
                     .clip(RoundedCornerShape(30.dp))
-                    .background(Color.White)
             )
-
             Spacer(modifier = Modifier.height(35.dp))
 
             TextField(
-                value = email,
-                onValueChange = { logicaInicioSesion.onEmailChange(it) },
+                value = password,
+                onValueChange = { logicaInicioSesion.onPasswordChange(it) },
                 label = { Text("PASSWORD") },
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Lock, // Cambia este ícono según lo necesites
-                        contentDescription = "Icono de validación",
-                        tint = Color.Black // Color del ícono
-                    )
-                },
                 shape = RoundedCornerShape(30.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
                 modifier = Modifier
                     .width(300.dp)
-                    .shadow(
-                        elevation = 8.dp,
-                        shape = RoundedCornerShape(30.dp),
-                        clip = false
-                    )
                     .clip(RoundedCornerShape(30.dp))
-                    .background(Color.White)
+
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -144,7 +105,6 @@ fun PantallaInicioSesion(
                     Text(
                         text = "Iniciar sesion",
                         modifier = Modifier
-
                             .clickable { logicaInicioSesion.iniciarSesion() },
                         fontSize = 30.sp
 
@@ -169,7 +129,7 @@ fun PantallaInicioSesion(
                     Icon(
                         imageVector = Icons.Filled.ArrowForward,
                         contentDescription = "Arrow Forward",
-                        modifier = Modifier.size(30.dp),
+                        modifier = Modifier.size(35.dp),
 
                     )
                 }
