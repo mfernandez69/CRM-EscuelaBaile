@@ -146,7 +146,7 @@ fun MenuLateral(
                             }
                             when (index) {
                                 0 -> navController.navigate("pantallaPrincipal")
-                                1 -> navController.navigate("")
+                                1 -> navController.navigate("pantallaPago")
                                 2 -> navController.navigate("pantallaAgenda")
                                 3 -> navController.navigate("")
                                 4 -> navController.navigate("")
