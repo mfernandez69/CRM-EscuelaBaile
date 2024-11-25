@@ -96,7 +96,7 @@ fun PantallaAgenda(
             },
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { /* Acción del FAB */ },
+                    onClick = { navHostController.navigate("PantallaAddTarea") },
                     containerColor = MaterialTheme.colorScheme.primary
                 ) {
                     Icon(

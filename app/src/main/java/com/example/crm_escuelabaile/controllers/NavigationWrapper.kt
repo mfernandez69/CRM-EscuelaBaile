@@ -21,5 +21,8 @@ fun NavigationWrapper(navHostController: NavHostController) {
         composable("pantallaAgenda") {
             PantallaAgenda(navHostController)
         }
+        composable("pantallaAddTarea") {
+            PantallaAddTarea(navHostController)
+        }
     }
 }
