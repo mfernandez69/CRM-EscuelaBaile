@@ -105,7 +105,7 @@ fun PantallaInicioSesion(
                     Text(
                         text = "Iniciar sesion",
                         modifier = Modifier
-                            .clickable { navController.navigate(route = logicaInicioSesion.iniciarSesion()) },
+                            .clickable { logicaInicioSesion.iniciarSesion() },
                         fontSize = 30.sp
 
                     )
@@ -152,7 +152,12 @@ fun PantallaInicioSesion(
                     modifier = Modifier.clickable { navController.navigate(route = "pantallaRegistro") }
                 )
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(50.dp))
+            Image(
+                painter = painterResource(id = R.drawable.image_removebg_preview__3),
+                contentDescription = null,
+                modifier = Modifier.size(200.dp)
+            )
             Text(
                 text = when (estadoInicioSesion) {
                     //Aqui definimos el texto de cada estado del inicio de sesion
