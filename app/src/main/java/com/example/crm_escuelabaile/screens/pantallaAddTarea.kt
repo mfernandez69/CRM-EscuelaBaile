@@ -37,9 +37,14 @@ import com.example.crm_escuelabaile.controllers.LogicaInicioSesion
 import com.example.crm_escuelabaile.controllers.LogicaMenu
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.rememberTimePickerState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.example.crm_escuelabaile.controllers.LogicaAddTarea
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -69,13 +74,13 @@ fun PantallaAddTarea(
             )
         }
     ){ innerPadding ->
-        FormularioTarea(innerPadding,logicaAddTarea)
+        FormularioTarea(innerPadding, logicaAddTarea, navHostController)
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea){
+fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, navHostController: NavHostController){
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -103,9 +108,9 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea){
             label = { Text("Descripción") }
         )
         Spacer(modifier = Modifier.size(10.dp))
+
         val datePickerState = rememberDatePickerState()
         datePickerState.displayMode = DisplayMode.Input
-
 
         DatePicker(
             state = datePickerState,
@@ -113,6 +118,15 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea){
             title = null,
             headline = null
         )
+
+        LaunchedEffect(datePickerState.selectedDateMillis) {
+            datePickerState.selectedDateMillis?.let { millis ->
+                // val fecha = Timestamp(millis / 1000, 0)
+                val dia = Date(millis)
+                logicaAddTarea.setDiaSeleccionado(dia)
+            }
+        }
+
         Spacer(modifier = Modifier.size(10.dp))
 
         val currentTime = Calendar.getInstance()
@@ -123,21 +137,20 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea){
             is24Hour = true,
         )
 
-        val hora by remember { mutableStateOf("") }
         TimeInput(
             state = timePickerState,
         )
 
+        LaunchedEffect(timePickerState.hour, timePickerState.minute) {
+            val calendar = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                set(Calendar.MINUTE, timePickerState.minute)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
 
-        Spacer(modifier = Modifier.size(10.dp))
-
-        // Email del recipiente
-        val email by logicaAddTarea.email.collectAsState()
-        OutlinedTextField(
-            value = email,
-            onValueChange = { logicaAddTarea.updateEmail(it) },
-            label = { Text("Email del recipiente") }
-        )
+            logicaAddTarea.setHoraSeleccionada(calendar)
+        }
 
         Spacer(modifier = Modifier.size(10.dp))
 
@@ -151,7 +164,8 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea){
 
         Button(
             onClick = {
-                // Aquí puedes llamar a una función en LogicaAddTarea para procesar la tarea
+                logicaAddTarea.addTarea()
+                navHostController.navigate("PantallaAgenda")
             },
             modifier = Modifier.fillMaxWidth()
         ) {
