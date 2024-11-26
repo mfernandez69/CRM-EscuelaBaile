@@ -48,6 +48,7 @@ fun PantallaInicioSesion(
             contentScale = ContentScale.FillHeight,
             modifier = Modifier.fillMaxSize() // La imagen ocupará todo el espacio del `Box`
         )
+        //CONTENIDO PRINCIPAL
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -189,7 +190,7 @@ fun PantallaInicioSesion(
                     text = "¿No tienes una cuenta? "
                 )
                 Text(
-                    text = "Usa codigo",
+                    text = "Registrate",
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.clickable { navController.navigate(route = "pantallaRegistro") }
                 )
