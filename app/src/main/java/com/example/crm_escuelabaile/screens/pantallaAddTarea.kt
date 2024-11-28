@@ -1,5 +1,7 @@
 package com.example.crm_escuelabaile.screens
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -41,7 +45,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.example.crm_escuelabaile.controllers.LogicaAddTarea
 import com.google.firebase.Timestamp
+import com.maxkeppeker.sheets.core.models.base.rememberSheetState
+import com.maxkeppeler.sheets.calendar.CalendarDialog
+import com.maxkeppeler.sheets.calendar.models.CalendarConfig
+import com.maxkeppeler.sheets.calendar.models.CalendarSelection
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -78,9 +95,11 @@ fun PantallaAddTarea(
     }
 }
 
+@SuppressLint("StateFlowValueCalledInComposition", "WeekBasedYear")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, navHostController: NavHostController){
+    val calendarState = rememberSheetState()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -109,15 +128,43 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
         )
         Spacer(modifier = Modifier.size(10.dp))
 
+
+        val currentLocalDate = LocalDateTime.now().toLocalDate()
+        val diaHoy = Date.from(currentLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
         val datePickerState = rememberDatePickerState()
         datePickerState.displayMode = DisplayMode.Input
 
-        DatePicker(
-            state = datePickerState,
-            showModeToggle = false,
-            title = null,
-            headline = null
+        LaunchedEffect(Unit) {
+
+            logicaAddTarea.setDiaSeleccionado(diaHoy)
+        }
+
+        val diaSeleccionado by logicaAddTarea.diaSeleccionado.collectAsState()
+        CalendarDialog(
+            state = calendarState,
+            config = CalendarConfig(
+                monthSelection = true,
+                yearSelection = true
+            ),
+            selection = CalendarSelection.Date {date ->
+                val dia = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant())
+                logicaAddTarea.setDiaSeleccionado(dia)
+            }
         )
+
+        val diaFormateado = diaSeleccionado?.let {dia ->
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            sdf.format(dia)
+        }
+
+        Button(
+            onClick = {
+                calendarState.show()
+            }
+        ) {
+            Text(text = diaFormateado.toString())
+        }
+
 
         LaunchedEffect(datePickerState.selectedDateMillis) {
             datePickerState.selectedDateMillis?.let { millis ->
@@ -172,5 +219,8 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
             Text(text = "Añadir Tarea")
         }
     }
+
+
 }
+
 

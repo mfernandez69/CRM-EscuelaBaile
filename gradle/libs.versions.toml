@@ -1,5 +1,8 @@
 [versions]
 agp = "8.6.0"
+maxkeppeler-calendar = "1.0.2"
+maxkeppeler-clock = "1.0.2"
+maxkeppeler-core = "1.0.2"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -34,6 +37,9 @@ androidx-navigation-runtime-ktx = { group = "androidx.navigation", name = "navig
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx", version.ref = "firebaseAuthKtx" }
 firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
+maxkeppeler-calendar = { module = "com.maxkeppeler.sheets-compose-dialogs:calendar", version.ref = "maxkeppeler-calendar" }
+maxkeppeler-clock = { module = "com.maxkeppeler.sheets-compose-dialogs:clock", version.ref = "maxkeppeler-clock" }
+maxkeppeler-core = { module = "com.maxkeppeler.sheets-compose-dialogs:core", version.ref = "maxkeppeler-core" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
