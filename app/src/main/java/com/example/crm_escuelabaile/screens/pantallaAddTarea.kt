@@ -1,7 +1,7 @@
 package com.example.crm_escuelabaile.screens
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.background
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -10,59 +10,45 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.navigation.NavHostController
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.crm_escuelabaile.controllers.LogicaInicioSesion
-import com.example.crm_escuelabaile.controllers.LogicaMenu
-import androidx.compose.material3.TimeInput
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import com.example.crm_escuelabaile.controllers.LogicaAddTarea
-import com.google.firebase.Timestamp
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
 import com.maxkeppeler.sheets.calendar.models.CalendarSelection
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toInstant
-import kotlinx.datetime.toLocalDateTime
+import com.maxkeppeler.sheets.clock.ClockDialog
+import com.maxkeppeler.sheets.clock.models.ClockConfig
+import com.maxkeppeler.sheets.clock.models.ClockSelection
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaAddTarea(
@@ -77,8 +63,7 @@ fun PantallaAddTarea(
                 ),
                 title = {
                     Text("Añadir Tarea")
-                }
-                ,
+                },
                 navigationIcon = {
                     IconButton(onClick = { navHostController.navigate("PantallaAgenda") },
                         colors = IconButtonDefaults.iconButtonColors(contentColor = Color.Black)) {
@@ -95,12 +80,9 @@ fun PantallaAddTarea(
     }
 }
 
-@SuppressLint("StateFlowValueCalledInComposition", "WeekBasedYear")
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, navHostController: NavHostController){
-    val calendarState = rememberSheetState()
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
@@ -128,76 +110,24 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
         )
         Spacer(modifier = Modifier.size(10.dp))
 
-
+        // FECHA
+        // Selecciona la fecha actual para ponerla como valor inicial
         val currentLocalDate = LocalDateTime.now().toLocalDate()
         val diaHoy = Date.from(currentLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
-        val datePickerState = rememberDatePickerState()
-        datePickerState.displayMode = DisplayMode.Input
-
-        LaunchedEffect(Unit) {
-
-            logicaAddTarea.setDiaSeleccionado(diaHoy)
-        }
-
-        val diaSeleccionado by logicaAddTarea.diaSeleccionado.collectAsState()
-        CalendarDialog(
-            state = calendarState,
-            config = CalendarConfig(
-                monthSelection = true,
-                yearSelection = true
-            ),
-            selection = CalendarSelection.Date {date ->
-                val dia = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant())
-                logicaAddTarea.setDiaSeleccionado(dia)
-            }
-        )
-
-        val diaFormateado = diaSeleccionado?.let {dia ->
-            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            sdf.format(dia)
-        }
-
-        Button(
-            onClick = {
-                calendarState.show()
-            }
-        ) {
-            Text(text = diaFormateado.toString())
-        }
-
-
-        LaunchedEffect(datePickerState.selectedDateMillis) {
-            datePickerState.selectedDateMillis?.let { millis ->
-                // val fecha = Timestamp(millis / 1000, 0)
-                val dia = Date(millis)
-                logicaAddTarea.setDiaSeleccionado(dia)
-            }
-        }
+        // Pone la fecha actual como valor inicial
+        LaunchedEffect(Unit) { logicaAddTarea.setDiaSeleccionado(diaHoy) }
+        // Imprime el Selector de fecha
+        CalendarioDia(logicaAddTarea)
 
         Spacer(modifier = Modifier.size(10.dp))
 
+        // HORA
+        // Selecciona la fecha actual para ponerla como valor inicial
         val currentTime = Calendar.getInstance()
-
-        val timePickerState = rememberTimePickerState(
-            initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
-            initialMinute = currentTime.get(Calendar.MINUTE),
-            is24Hour = true,
-        )
-
-        TimeInput(
-            state = timePickerState,
-        )
-
-        LaunchedEffect(timePickerState.hour, timePickerState.minute) {
-            val calendar = Calendar.getInstance().apply {
-                set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                set(Calendar.MINUTE, timePickerState.minute)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-            }
-
-            logicaAddTarea.setHoraSeleccionada(calendar)
-        }
+        // Pone la hora actual como valor inicial
+        LaunchedEffect(Unit) { logicaAddTarea.setHoraSeleccionada(currentTime) }
+        // Imprime el Selector de hora
+        CalendarioHora(logicaAddTarea)
 
         Spacer(modifier = Modifier.size(10.dp))
 
@@ -219,8 +149,79 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
             Text(text = "Añadir Tarea")
         }
     }
-
-
 }
 
+@RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CalendarioDia(logicaAddTarea: LogicaAddTarea){
+    val calendarState = rememberSheetState()
+    val diaSeleccionado by logicaAddTarea.diaSeleccionado.collectAsState()
+    val dateList: List<LocalDate> = LocalDate
+        .now()
+        .minusYears(100)
+        .datesUntil(LocalDate.now())
+        .toList()
+    CalendarDialog(
+        state = calendarState,
+        config = CalendarConfig(
+            monthSelection = true,
+            yearSelection = true,
+            disabledDates = dateList
+        ),
+        selection = CalendarSelection.Date {date ->
+            val dia = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant())
+            logicaAddTarea.setDiaSeleccionado(dia)
+        }
+    )
+
+    val diaFormateado = diaSeleccionado?.let {dia ->
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        sdf.format(dia)
+    }
+
+    Button(
+        onClick = {
+            calendarState.show()
+        }
+    ) {
+        Text(text = diaFormateado.toString())
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CalendarioHora(logicaAddTarea: LogicaAddTarea, modifier: Modifier = Modifier){
+    val clockState = rememberSheetState()
+    val horaSeleccionada by logicaAddTarea.horaSeleccionada.collectAsState()
+    ClockDialog(
+        state = clockState,
+        config = ClockConfig(
+            is24HourFormat = true,
+            defaultTime = LocalTime.now()
+        ),
+        selection = ClockSelection.HoursMinutes { hours, minutes ->
+            val hora = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, hours)
+                set(Calendar.MINUTE, minutes)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+            logicaAddTarea.setHoraSeleccionada(hora)
+        }
+    )
+
+    val horaFormateada = horaSeleccionada?.let {hora ->
+        val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
+        sdf.format(hora.time)
+    }
+
+    Button(
+        onClick = {
+            clockState.show()
+        }
+    ) {
+        Text(text = horaFormateada.toString())
+    }
+}
 
