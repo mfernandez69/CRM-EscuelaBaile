@@ -18,7 +18,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -215,7 +218,6 @@ fun NotificacionesLeidasScreen(notificacionViewModel: NotificacionViewModel) {
 @Composable
 fun NotificacionesTodasScreen(notificacionViewModel: NotificacionViewModel){
     val notificacionesTodas by notificacionViewModel.notificaciones.collectAsState()
-
     if (notificacionesTodas.isEmpty()) {
         Text("No hay notificaciones", Modifier.padding(16.dp))
     } else {
@@ -227,6 +229,7 @@ fun NotificacionesTodasScreen(notificacionViewModel: NotificacionViewModel){
             items(notificacionesTodas) { notificacion ->
                 NotificacionItem(notificacion, notificacionViewModel)
             }
+
         }
     }
 }
@@ -234,6 +237,8 @@ fun NotificacionesTodasScreen(notificacionViewModel: NotificacionViewModel){
 @Composable
 fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: NotificacionViewModel) {
     //Creamos una card para cada notificacion con la info del objeto
+    var elegirColorNotificacion = colorLeidaNoLeida(notificacion)
+
     val fechaFormateada = notificacion.fecha?.let { timestamp ->
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         sdf.format(timestamp.toDate())
@@ -242,6 +247,13 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .background(Color.Transparent),
+        colors = CardColors(
+            contentColor = Color.Black,
+            containerColor = elegirColorNotificacion,
+            disabledContentColor = Color.Unspecified,
+            disabledContainerColor = Color.Unspecified
+        )
     ) {
         Column(
             modifier = Modifier
@@ -256,10 +268,28 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
             Button(
                 onClick = {
                     notificacionViewModel.marcarLeido(notificacion)
-                }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFDB1C2),
+                    contentColor = Color.Black
+                )
             ){
                 Text(text = notificacionViewModel.leidaNoLeida(notificacion))
             }
         }
     }
+}
+
+fun colorLeidaNoLeida(notificacion: Notificacion): Color {
+
+    var colorNotificacion = Color.Gray
+
+    if(notificacion.leida){
+        colorNotificacion = Color(0xFF8C8E8E)
+    }
+    else{
+        colorNotificacion = Color.LightGray
+
+    }
+    return colorNotificacion
 }
