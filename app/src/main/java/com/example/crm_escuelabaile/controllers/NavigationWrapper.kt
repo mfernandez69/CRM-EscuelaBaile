@@ -33,5 +33,8 @@ fun NavigationWrapper(navHostController: NavHostController) {
         composable("pantallaPago") {
             PantallaPago(navHostController)
         }
+        composable("pantallaAlumnos") {
+            PantallaAlumnos(navHostController)
+        }
     }
 }

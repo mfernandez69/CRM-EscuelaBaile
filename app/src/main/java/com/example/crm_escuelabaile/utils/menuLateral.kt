@@ -148,7 +148,7 @@ fun MenuLateral(
                                 0 -> navController.navigate("pantallaPrincipal")
                                 1 -> navController.navigate("pantallaPago")
                                 2 -> navController.navigate("pantallaAgenda")
-                                3 -> navController.navigate("")
+                                3 -> navController.navigate("pantallaAlumnos")
                                 4 -> navController.navigate("")
                                 5 -> {
                                     logicaInicioSesion.cerrarSesion()
