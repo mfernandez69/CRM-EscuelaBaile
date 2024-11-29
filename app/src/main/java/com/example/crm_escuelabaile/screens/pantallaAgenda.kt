@@ -1,21 +1,28 @@
 package com.example.crm_escuelabaile.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -40,6 +47,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -188,31 +198,92 @@ fun ListaTareas(logicaAgenda: LogicaAgenda = viewModel()) {
         }
     }
 }
+
+
 @Composable
 fun TareaItem(tarea: Tarea) {
-    //Creamos una card para cada notificacion con la info del objeto
-    /*val fechaFormateada = tarea.fecha?.let { timestamp ->
-        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        sdf.format(timestamp.toDate())
-    } ?: "Sin fecha"*/
     val horaFormateada = tarea.fecha?.let { timestamp ->
         val sdf = SimpleDateFormat("HH:mm", Locale.getDefault())
         sdf.format(timestamp.toDate())
     } ?: "Sin hora"
-    Card(
+
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Column(
+        // Sombra en el lado izquierdo
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(8.dp) // Ancho de la sombra
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0x80000000), // Sombra negra semitransparente
+                            Color.Transparent // Gradiente hacia transparente
+                        )
+                    )
+                )
+                .align(Alignment.CenterStart) // Alinea la sombra al lado izquierdo
+        )
+
+        // Tarjeta de contenido con fondo blanco, borde y elevación
+        Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(start = 8.dp) // Deja espacio para la sombra
+                .border(2.dp, Color(0xFF00FFFF), MaterialTheme.shapes.medium), // Borde cyan
+            shape = MaterialTheme.shapes.medium,
+            elevation = CardDefaults.elevatedCardElevation(8.dp) // Elevación
         ) {
-            Text(text = tarea.nombre ?: "Sin título", fontWeight = FontWeight.Bold)
-            Text(text = tarea.descripcion ?: "Sin descripción")
-            Text(text = tarea.ubicacion ?: "Sin ubicación")
-            Text(text = "Hora: $horaFormateada")
+            // Aquí añadimos el fondo blanco directamente al Card
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White) // Fondo blanco dentro del Card
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = horaFormateada,
+                        fontWeight = FontWeight.Bold,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+
+                    Text(
+                        text = tarea.descripcion ?: "Sin descripción",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+
+                    Row(
+                        modifier = Modifier.padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.LocationOn,
+                            contentDescription = "Ubicación",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = tarea.ubicacion ?: "Sin ubicación",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                    }
+                }
+            }
         }
     }
 }
+
+
+
+
+
