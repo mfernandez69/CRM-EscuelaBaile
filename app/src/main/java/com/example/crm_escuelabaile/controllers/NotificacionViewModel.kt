@@ -7,6 +7,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crm_escuelabaile.models.Notificacion
+import com.google.firebase.Firebase
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,6 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 class NotificacionViewModel : ViewModel() {
+    val auth: FirebaseAuth = Firebase.auth
     private val _notificaciones = MutableStateFlow<List<Notificacion>>(emptyList())
     val notificaciones: StateFlow<List<Notificacion>> = _notificaciones
 
@@ -41,7 +45,10 @@ class NotificacionViewModel : ViewModel() {
                 _notificacionesNoLeidas.value = noLeidas
                 _notificacionesLeidas.value = notificacionesObtenidas.filter { it.leida }
                 _cantidadNotificacionesNoLeidas.value = noLeidas.size
-                Log.d("NotificacionViewModel", "Notificaciones cargadas: ${notificacionesObtenidas.size}")
+                Log.d(
+                    "NotificacionViewModel",
+                    "Notificaciones cargadas: ${notificacionesObtenidas.size}"
+                )
                 Log.d("NotificacionViewModel", "Notificaciones no leídas: ${noLeidas.size}")
             } catch (e: Exception) {
                 Log.e("NotificacionViewModel", "Error al cargar notificaciones", e)
@@ -51,33 +58,42 @@ class NotificacionViewModel : ViewModel() {
 
     private suspend fun getNotificaciones(): List<Notificacion> {
         //Esta funcion realiza una peticion a firebase y devuelve una Lista con los objetos Notificacion
+        val user = auth.currentUser
+        val email = user?.email
         val db = FirebaseFirestore.getInstance()
         val coleccion = db.collection("notificacion")
 
         return try {
-            //Hacemos el select en firebase ordenando las notificaciones segun la fecha (de mas reciente a más antigua)
-            val querySnapshot = coleccion.orderBy("fecha", Query.Direction.DESCENDING).get().await()
-            //Igualamos una array a los resultados obtenidos transformandolos en objetos Notificacion
-            val notificaciones = querySnapshot.toObjects(Notificacion::class.java)
-            Log.d("NotificacionViewModel", "Notificaciones obtenidas de Firestore: ${notificaciones.size}")
-            notificaciones
+            if (email != null) {
+                //Obtenemos las notificaciones asignadas al administrador
+                val query = coleccion.whereEqualTo("emailDestinatario", email)
+                val querySnapshot = query.get().await()
+                //Las notificaciones tranasformadas a objetos se ordenan por su fecha
+                val notificaciones = querySnapshot.toObjects(Notificacion::class.java)
+                    .sortedByDescending { it.fecha }
+
+                Log.d("NotificacionViewModel", "Notificaciones obtenidas: ${notificaciones.size}")
+                notificaciones
+            } else {
+                Log.e("NotificacionViewModel", "Email del usuario es nulo")
+                emptyList()
+            }
         } catch (e: Exception) {
-            Log.e("NotificacionViewModel", "Error al obtener notificaciones de Firestore", e)
+            Log.e("NotificacionViewModel", "Error al obtener notificaciones", e)
             emptyList()
         }
     }
 
-    public fun marcarLeido(notificacion: Notificacion){
+    public fun marcarLeido(notificacion: Notificacion) {
         val db = FirebaseFirestore.getInstance()
         val coleccion = db.collection("notificacion")
         try {
             val notificacionDocument = coleccion.document(notificacion.id)
 
-            if(notificacion.leida){
+            if (notificacion.leida) {
                 notificacion.leida = false
                 notificacionDocument.update("leida", false)
-            }
-            else {
+            } else {
                 notificacion.leida = true
                 notificacionDocument.update("leida", true)
             }
@@ -88,12 +104,11 @@ class NotificacionViewModel : ViewModel() {
     }
 
     @Composable
-    public fun leidaNoLeida(notificacion: Notificacion): String{
+    public fun leidaNoLeida(notificacion: Notificacion): String {
         var textoNotificacion = "";
-        if (notificacion.leida){
+        if (notificacion.leida) {
             textoNotificacion = "Marcar como no leida"
-        }
-        else{
+        } else {
             textoNotificacion = "Marcar como leida"
         }
         return textoNotificacion

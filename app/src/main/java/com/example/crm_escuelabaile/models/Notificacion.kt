@@ -10,5 +10,6 @@ data class Notificacion(
     val email: String = "",
     val telefono: String = "",
     val fecha: Timestamp? = null,
-    var leida :Boolean = false
+    var leida :Boolean = false,
+    var emailDestinatario:String=""
 )
