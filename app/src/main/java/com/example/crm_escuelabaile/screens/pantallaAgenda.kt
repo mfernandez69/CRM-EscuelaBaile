@@ -212,7 +212,7 @@ fun TareaItem(tarea: Tarea) {
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        // Sombra en el lado izquierdo
+        // Sombra en el lado izquierdo con color rosa
         Box(
             modifier = Modifier
                 .fillMaxHeight()
@@ -220,7 +220,7 @@ fun TareaItem(tarea: Tarea) {
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            Color(0x80000000), // Sombra negra semitransparente
+                            Color(0x80FF66B2), // Sombra rosa semitransparente
                             Color.Transparent // Gradiente hacia transparente
                         )
                     )
@@ -233,7 +233,7 @@ fun TareaItem(tarea: Tarea) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 8.dp) // Deja espacio para la sombra
-                .border(2.dp, Color(0xFF00FFFF), MaterialTheme.shapes.medium), // Borde cyan
+                .border(2.dp, Color(0xFFFF66B2), MaterialTheme.shapes.medium), // Borde cyan
             shape = MaterialTheme.shapes.medium,
             elevation = CardDefaults.elevatedCardElevation(8.dp) // Elevación
         ) {
@@ -282,6 +282,7 @@ fun TareaItem(tarea: Tarea) {
         }
     }
 }
+
 
 
 
