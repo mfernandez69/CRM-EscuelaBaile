@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
@@ -38,6 +39,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -107,10 +110,12 @@ fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
     //La pantalla principal tiene dos estados (las opciones del tab estan enlazadas con cada estado)
     val pagerState = rememberPagerState(pageCount = { 3 })
     val cantidadNoLeidas by notificacionViewModel.cantidadNotificacionesNoLeidas.collectAsState()
+    val cantidadNotificaciones by notificacionViewModel.cantidadNotificaciones.collectAsState()
     Column {
         TabRow(
             selectedTabIndex = pagerState.currentPage,
-            contentColor = Color.White
+            contentColor = Color.White,
+            modifier = Modifier.padding(horizontal = 8.dp)
         ) {
             val scope = rememberCoroutineScope()
 
@@ -120,23 +125,119 @@ fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
                     scope.launch {
                         pagerState.animateScrollToPage(0)
                     }
+                },
+
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFFFF639B),  // Rosa más suave
+                                    Color(0xFFFC8EB5) // Rosa rojizo fuerte
+                                )
+                            )
+                        )
+                        .padding(8.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "No leídos",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                        if (cantidadNoLeidas > 0) {
+                            Box(
+                                modifier = Modifier
+                                    .padding(start = 4.dp)
+                                    .size(24.dp)
+                                    .background(Color.Red, CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = cantidadNoLeidas.toString(),
+                                    color = Color.White,
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // leidos
+            Tab(
+                selected = pagerState.currentPage == 1,
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(1)
+                    }
                 }
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    Color(0xFFFC8EB5),
+                                    Color(0xFFFC8EB5)
+                                )
+                            )
+                        )
+                        .padding(8.dp), // Espaciado interno
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
-                        text="No leídos",
-                        color = Color.Black
+                        text = "Leídos",
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
                     )
-                    if (cantidadNoLeidas > 0) {
+                }
+            }
+
+            // tab de todos
+            Tab(
+                selected = pagerState.currentPage == 2,
+                onClick = {
+                    scope.launch {
+                        pagerState.animateScrollToPage(2)
+                    }
+                }
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize() // Llenar todo el espacio disponible del Tab
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+
+                                    Color(0xFFFC8EB5), // Rosa rojizo fuerte
+                                    Color(0xFFFF639B)  // Rosa más suave
+
+                                )
+                            )
+                        )
+                        .padding(8.dp), // Espaciado interno para el contenido
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Todos",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
                         Box(
                             modifier = Modifier
                                 .padding(start = 4.dp)
                                 .size(24.dp)
-                                .background(Color.Red, CircleShape),
+                                .background(Color.Red, CircleShape), // Indicador circular rojo
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = cantidadNoLeidas.toString(),
+                                text = cantidadNotificaciones.toString(),
                                 color = Color.White,
                                 fontSize = 12.sp
                             )
@@ -145,25 +246,6 @@ fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
                 }
             }
 
-            Tab(
-                text = { Text(text="Leídos",color = Color.Black) },
-                selected = pagerState.currentPage == 1,
-                onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(1)
-                    }
-                }
-            )
-
-            Tab(
-                text = { Text(text="Todos",color = Color.Black) },
-                selected = pagerState.currentPage == 2,
-                onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(2)
-                    }
-                }
-            )
         }
 
         HorizontalPager(state = pagerState) { page ->
@@ -243,10 +325,12 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         sdf.format(timestamp.toDate())
     } ?: "Sin fecha"
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // Sombra personalizada
             .background(Color.Transparent),
         colors = CardColors(
             contentColor = Color.Black,
@@ -260,36 +344,46 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(text = notificacion.titulo ?: "Sin título", fontWeight = FontWeight.Bold)
-            Text(text = notificacion.descripcion ?: "Sin descripción")
-            Text(text = notificacion.email ?: "Sin título")
-            Text(text = notificacion.telefono ?: "Sin descripción")
-            Text(text = "Fecha: $fechaFormateada")
-            Button(
-                onClick = {
-                    notificacionViewModel.marcarLeido(notificacion)
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFDB1C2),
-                    contentColor = Color.Black
+            Text(text = notificacion.titulo ?: "Sin título",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
                 )
-            ){
-                Text(text = notificacionViewModel.leidaNoLeida(notificacion))
+            Text(text = notificacion.descripcion ?: "Sin descripción",
+                fontSize = 15.sp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(text = notificacion.email ?: "Sin email")
+                Button(
+                    onClick = {
+                        notificacionViewModel.marcarLeido(notificacion)
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFFDB1C2),
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text(text = notificacionViewModel.leidaNoLeida(notificacion))
+                }
             }
         }
     }
+
+
 }
 
 fun colorLeidaNoLeida(notificacion: Notificacion): Color {
 
-    var colorNotificacion = Color.Gray
+    var colorNotificacion = Color.White
 
-    if(notificacion.leida){
-        colorNotificacion = Color(0xFF8C8E8E)
+    /*if(notificacion.leida){
+        colorNotificacion = Color(0xFFC9CBCB)
     }
     else{
-        colorNotificacion = Color.LightGray
+        colorNotificacion = Color(0xFFACAFAF)
 
-    }
+    }*/
     return colorNotificacion
 }

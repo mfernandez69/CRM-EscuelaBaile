@@ -31,6 +31,9 @@ class NotificacionViewModel : ViewModel() {
     private val _cantidadNotificacionesNoLeidas = MutableStateFlow(0)
     val cantidadNotificacionesNoLeidas: StateFlow<Int> = _cantidadNotificacionesNoLeidas
 
+    private val _cantidadNotificaciones = MutableStateFlow(0)
+    val cantidadNotificaciones: StateFlow<Int> = _cantidadNotificaciones
+
     init {
         Log.d("NotificacionViewModel", "Inicializando ViewModel")
         cargarNotificaciones()
@@ -45,6 +48,7 @@ class NotificacionViewModel : ViewModel() {
                 _notificacionesNoLeidas.value = noLeidas
                 _notificacionesLeidas.value = notificacionesObtenidas.filter { it.leida }
                 _cantidadNotificacionesNoLeidas.value = noLeidas.size
+                _cantidadNotificaciones.value = notificacionesObtenidas.size
                 Log.d(
                     "NotificacionViewModel",
                     "Notificaciones cargadas: ${notificacionesObtenidas.size}"
