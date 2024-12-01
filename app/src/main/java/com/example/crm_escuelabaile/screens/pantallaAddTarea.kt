@@ -2,6 +2,7 @@ package com.example.crm_escuelabaile.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -9,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -144,7 +147,11 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
                 logicaAddTarea.addTarea()
                 navHostController.navigate("PantallaAgenda")
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.width(150.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFFF375F), // Cambia el color de fondo
+                contentColor = Color.White          // Cambia el color del texto
+            )
         ) {
             Text(text = "Añadir Tarea")
         }
