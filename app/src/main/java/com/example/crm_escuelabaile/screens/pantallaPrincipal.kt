@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,6 +32,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -39,6 +42,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -112,52 +116,126 @@ fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
     val cantidadNoLeidas by notificacionViewModel.cantidadNotificacionesNoLeidas.collectAsState()
     val cantidadNotificaciones by notificacionViewModel.cantidadNotificaciones.collectAsState()
     Column {
-        TabRow(
-            selectedTabIndex = pagerState.currentPage,
-            contentColor = Color.White,
-            modifier = Modifier.padding(horizontal = 8.dp)
-        ) {
-            val scope = rememberCoroutineScope()
-
-            Tab(
-                selected = pagerState.currentPage == 0,
-                onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(0)
-                    }
-                },
-
+        Box(
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .shadow(4.dp, RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(12.dp))
+        ){
+            TabRow(
+                selectedTabIndex = pagerState.currentPage,
+                contentColor = Color.White,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(12.dp)) // Bordes redondeados
+                    .shadow(4.dp, RoundedCornerShape(12.dp)), // Sombreado
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier
+                            .tabIndicatorOffset(tabPositions[pagerState.currentPage])
+                            .height(4.dp) // Grosor de la barra
+                            .clip(RoundedCornerShape(12.dp)), // Bordes redondeados para la barra
+                        color = Color(0xFFFD667E) // Cambia el color a tu preferencia
+                    )
+                }
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFFFF639B),  // Rosa más suave
-                                    Color(0xFFFC8EB5) // Rosa rojizo fuerte
-                                )
+                val scope = rememberCoroutineScope()
+
+                Tab(
+                    selected = pagerState.currentPage == 0,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(0)
+                        }
+                    },
+
+                    ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+
+                            .padding(8.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "No leídos",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
                             )
-                        )
-                        .padding(8.dp),
-                    contentAlignment = Alignment.Center
+                            if (cantidadNoLeidas > 0) {
+                                Box(
+                                    modifier = Modifier
+                                        .padding(start = 4.dp)
+                                        .size(24.dp)
+                                        .background(Color.Red, CircleShape),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = cantidadNoLeidas.toString(),
+                                        color = Color.White,
+                                        fontSize = 12.sp
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // leidos
+                Tab(
+                    selected = pagerState.currentPage == 1,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(1)
+                        }
+                    }
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+
+                            .padding(8.dp), // Espaciado interno
+                        contentAlignment = Alignment.Center
+                    ) {
                         Text(
-                            text = "No leídos",
-                            color = Color.White,
+                            text = "Leídos",
+                            color = Color.Black,
                             fontWeight = FontWeight.Bold
                         )
-                        if (cantidadNoLeidas > 0) {
+                    }
+                }
+
+                // tab de todos
+                Tab(
+                    selected = pagerState.currentPage == 2,
+                    onClick = {
+                        scope.launch {
+                            pagerState.animateScrollToPage(2)
+                        }
+                    }
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize() // Llenar todo el espacio disponible del Tab
+
+                            .padding(8.dp), // Espaciado interno para el contenido
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "Todos",
+                                color = Color.Black,
+                                fontWeight = FontWeight.Bold
+                            )
                             Box(
                                 modifier = Modifier
                                     .padding(start = 4.dp)
                                     .size(24.dp)
-                                    .background(Color.Red, CircleShape),
+                                    .background(Color.Red, CircleShape), // Indicador circular rojo
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
-                                    text = cantidadNoLeidas.toString(),
+                                    text = cantidadNotificaciones.toString(),
                                     color = Color.White,
                                     fontSize = 12.sp
                                 )
@@ -165,85 +243,7 @@ fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
                         }
                     }
                 }
-            }
 
-            // leidos
-            Tab(
-                selected = pagerState.currentPage == 1,
-                onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(1)
-                    }
-                }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-                                    Color(0xFFFC8EB5),
-                                    Color(0xFFFC8EB5)
-                                )
-                            )
-                        )
-                        .padding(8.dp), // Espaciado interno
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "Leídos",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-
-            // tab de todos
-            Tab(
-                selected = pagerState.currentPage == 2,
-                onClick = {
-                    scope.launch {
-                        pagerState.animateScrollToPage(2)
-                    }
-                }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize() // Llenar todo el espacio disponible del Tab
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(
-
-                                    Color(0xFFFC8EB5), // Rosa rojizo fuerte
-                                    Color(0xFFFF639B)  // Rosa más suave
-
-                                )
-                            )
-                        )
-                        .padding(8.dp), // Espaciado interno para el contenido
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "Todos",
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Box(
-                            modifier = Modifier
-                                .padding(start = 4.dp)
-                                .size(24.dp)
-                                .background(Color.Red, CircleShape), // Indicador circular rojo
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = cantidadNotificaciones.toString(),
-                                color = Color.White,
-                                fontSize = 12.sp
-                            )
-                        }
-                    }
-                }
             }
 
         }
