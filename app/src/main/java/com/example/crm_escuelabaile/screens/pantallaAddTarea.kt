@@ -11,7 +11,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,12 +33,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import com.example.crm_escuelabaile.controllers.LogicaAddTarea
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -83,6 +91,7 @@ fun PantallaAddTarea(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, navHostController: NavHostController){
@@ -99,7 +108,29 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
         OutlinedTextField(
             value = nombre,
             onValueChange = { logicaAddTarea.updateNombre(it) },
-            label = { Text("Nombre de la tarea") }
+            label = { Text("Nombre de la tarea") },
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Info, // Cambia este ícono según lo necesites
+                    contentDescription = "Icono de validación",
+                    tint = Color.Black // Color del ícono
+                )
+            },
+            shape = RoundedCornerShape(10.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .width(300.dp)
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp),
+                    clip = false
+                )
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.White)
         )
 
         Spacer(modifier = Modifier.size(10.dp))
@@ -109,8 +140,63 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
         OutlinedTextField(
             value = descripcion,
             onValueChange = { logicaAddTarea.updateDescripcion(it) },
-            label = { Text("Descripción") }
+            label = { Text("Descripción") },
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.Edit, // Cambia este ícono según lo necesites
+                    contentDescription = "Icono de validación",
+                    tint = Color.Black // Color del ícono
+                )
+            },
+            shape = RoundedCornerShape(10.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .width(300.dp)
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp),
+                    clip = false
+                )
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.White)
         )
+        Spacer(modifier = Modifier.size(10.dp))
+
+        // Ubicación
+        val ubicacion by logicaAddTarea.ubicacion.collectAsState()
+
+        OutlinedTextField(
+            value = ubicacion,
+            onValueChange = { logicaAddTarea.updateUbicacion(it) },
+            label = { Text("Ubicación") },
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Filled.LocationOn, // Cambia este ícono según lo necesites
+                    contentDescription = "Icono de validación",
+                    tint = Color.Black // Color del ícono
+                )
+            },
+            shape = RoundedCornerShape(10.dp),
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            modifier = Modifier
+                .width(300.dp)
+                .shadow(
+                    elevation = 8.dp,
+                    shape = RoundedCornerShape(10.dp),
+                    clip = false
+                )
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color.White)
+        )
+
         Spacer(modifier = Modifier.size(10.dp))
 
         // FECHA
@@ -134,13 +220,10 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
 
         Spacer(modifier = Modifier.size(10.dp))
 
-        // Ubicación
-        val ubicacion by logicaAddTarea.ubicacion.collectAsState()
-        OutlinedTextField(
-            value = ubicacion,
-            onValueChange = { logicaAddTarea.updateUbicacion(it) },
-            label = { Text("Ubicación") }
-        )
+
+
+
+        Spacer(modifier = Modifier.size(20.dp))
 
         Button(
             onClick = {
@@ -155,6 +238,7 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
         ) {
             Text(text = "Añadir Tarea")
         }
+
     }
 }
 
@@ -188,6 +272,11 @@ fun CalendarioDia(logicaAddTarea: LogicaAddTarea){
     }
 
     Button(
+        modifier = Modifier,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFFFF375F), // Cambia el color de fondo
+            contentColor = Color.White          // Cambia el color del texto
+        ),
         onClick = {
             calendarState.show()
         }
@@ -224,6 +313,11 @@ fun CalendarioHora(logicaAddTarea: LogicaAddTarea, modifier: Modifier = Modifier
     }
 
     Button(
+        modifier = Modifier,
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFFFF375F), // Cambia el color de fondo
+            contentColor = Color.White          // Cambia el color del texto
+        ),
         onClick = {
             clockState.show()
         }
