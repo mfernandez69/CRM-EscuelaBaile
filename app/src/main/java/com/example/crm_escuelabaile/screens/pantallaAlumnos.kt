@@ -5,6 +5,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,8 +15,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -41,6 +48,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -123,6 +131,7 @@ private fun BusquedaAlumno(logicaAlumnos: LogicaAlumnos = viewModel()){
         active = active,  // Indica si la barra de busqueda esta siendo usada o no
         onActiveChange = { active = it },  // Cuando el valor de active se esta cambiando
         placeholder = { Text(text = "Buscar alumnos") },
+
         leadingIcon = {
             if (active){
                 IconButton(onClick = { active = false } )
@@ -151,7 +160,8 @@ private fun BusquedaAlumno(logicaAlumnos: LogicaAlumnos = viewModel()){
             }
         },
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+
     ) {
         LazyColumn(
             modifier = Modifier
@@ -209,11 +219,60 @@ private fun AlumnoBusquedaItem(alumno: Alumno, logicaAlumnos: LogicaAlumnos) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(26.dp)
         ) {
-            Text(text = alumno.nombre)
-            Text(text = alumno.email)
-            Text(text = fechaNacimientoFormateada)
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Icon(
+                    imageVector = Icons.Filled.AccountBox,
+                    contentDescription = "name"
+                )
+                Text(text = alumno.nombre, fontSize = 20.sp)
+
+            }
+            Spacer(modifier = Modifier.height(15.dp))
+           Row(
+               modifier = Modifier,
+               verticalAlignment = Alignment.CenterVertically
+           ) {
+               Icon(
+                   imageVector = Icons.Filled.Email,
+                   contentDescription = "name"
+               )
+               Text(text = alumno.email
+                   , fontSize = 20.sp)
+
+
+           }
+            Spacer(modifier = Modifier.height(15.dp))
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Icon(
+                    imageVector = Icons.Filled.Face,
+                    contentDescription = "name"
+                )
+                Text(text = alumno.dni
+                    , fontSize = 20.sp)
+
+            }
+            Spacer(modifier = Modifier.height(15.dp))
+            Row(
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Icon(
+                    imageVector = Icons.Filled.DateRange,
+                    contentDescription = "name"
+                )
+                Text(text = fechaNacimientoFormateada
+                    , fontSize = 20.sp)
+
+            }
+            Spacer(modifier = Modifier.height(15.dp))
         }
     }
     if (mostrarPopup) {

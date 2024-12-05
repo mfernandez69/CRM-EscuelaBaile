@@ -2,7 +2,10 @@ package com.example.crm_escuelabaile.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -42,6 +45,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.sp
+import com.example.crm_escuelabaile.R
 import com.example.crm_escuelabaile.controllers.LogicaAddTarea
 import com.maxkeppeker.sheets.core.models.base.rememberSheetState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
@@ -108,7 +114,9 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
         OutlinedTextField(
             value = nombre,
             onValueChange = { logicaAddTarea.updateNombre(it) },
-            label = { Text("Nombre de la tarea") },
+            label = { Text("Nombre de la tarea",
+                fontSize = 20.sp) },
+
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Info, // Cambia este ícono según lo necesites
@@ -133,14 +141,15 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
                 .background(Color.White)
         )
 
-        Spacer(modifier = Modifier.size(10.dp))
+        Spacer(modifier = Modifier.size(30.dp))
 
         // Descripción
         val descripcion by logicaAddTarea.descripcion.collectAsState()
         OutlinedTextField(
             value = descripcion,
             onValueChange = { logicaAddTarea.updateDescripcion(it) },
-            label = { Text("Descripción") },
+            label = { Text("Descripción",
+                fontSize = 20.sp) },
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Edit, // Cambia este ícono según lo necesites
@@ -164,7 +173,7 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
                 .clip(RoundedCornerShape(10.dp))
                 .background(Color.White)
         )
-        Spacer(modifier = Modifier.size(10.dp))
+        Spacer(modifier = Modifier.size(30.dp))
 
         // Ubicación
         val ubicacion by logicaAddTarea.ubicacion.collectAsState()
@@ -172,7 +181,8 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
         OutlinedTextField(
             value = ubicacion,
             onValueChange = { logicaAddTarea.updateUbicacion(it) },
-            label = { Text("Ubicación") },
+            label = { Text("Ubicación",
+                fontSize = 20.sp) },
             trailingIcon = {
                 Icon(
                     imageVector = Icons.Filled.LocationOn, // Cambia este ícono según lo necesites
@@ -197,7 +207,7 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
                 .background(Color.White)
         )
 
-        Spacer(modifier = Modifier.size(10.dp))
+        Spacer(modifier = Modifier.size(30.dp))
 
         // FECHA
         // Selecciona la fecha actual para ponerla como valor inicial
@@ -208,7 +218,7 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
         // Imprime el Selector de fecha
         CalendarioDia(logicaAddTarea)
 
-        Spacer(modifier = Modifier.size(10.dp))
+        Spacer(modifier = Modifier.size(20.dp))
 
         // HORA
         // Selecciona la fecha actual para ponerla como valor inicial
@@ -218,29 +228,41 @@ fun FormularioTarea(innerPadding: PaddingValues,logicaAddTarea: LogicaAddTarea, 
         // Imprime el Selector de hora
         CalendarioHora(logicaAddTarea)
 
-        Spacer(modifier = Modifier.size(10.dp))
+
+        Spacer(modifier = Modifier.size(50.dp))
 
 
-
-
-        Spacer(modifier = Modifier.size(20.dp))
-
-        Button(
-            onClick = {
-                logicaAddTarea.addTarea()
-                navHostController.navigate("PantallaAgenda")
-            },
-            modifier = Modifier.width(150.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFFFF375F), // Cambia el color de fondo
-                contentColor = Color.White          // Cambia el color del texto
-            )
-        ) {
-            Text(text = "Añadir Tarea")
+            Button(
+                onClick = {
+                    logicaAddTarea.addTarea()
+                    navHostController.navigate("PantallaAgenda")
+                },
+                modifier = Modifier
+                    .width(300.dp)
+                    .background(Color.White), // Fondo blanco
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFFF375F),
+                    contentColor = Color.White          // Texto negro
+                ),
+                elevation = ButtonDefaults.elevatedButtonElevation( // Elevación interna del botón
+                    defaultElevation = 0.dp, // Sin elevación interna
+                    pressedElevation = 0.dp,
+                    disabledElevation = 0.dp
+                )
+            ) {
+                Text(text = "Añadir Tarea", fontSize = 23.sp)
+            }
+        Spacer(modifier = Modifier.size(50.dp))
+        Image(
+            modifier = Modifier.size(200.dp),
+            painter = painterResource(id = R.drawable.logo_shake_it),
+            contentDescription = null
+        )
         }
 
     }
-}
+
 
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -272,16 +294,22 @@ fun CalendarioDia(logicaAddTarea: LogicaAddTarea){
     }
 
     Button(
-        modifier = Modifier,
+        modifier = Modifier.width(300.dp)
+            .border(
+                width = 2.dp,                     // Ancho del borde
+                color = Color.Black,              // Color del borde
+                shape = RoundedCornerShape(10.dp)
+                ),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFFF375F), // Cambia el color de fondo
-            contentColor = Color.White          // Cambia el color del texto
+            containerColor = Color(0xFFFFFFFF), // Cambia el color de fondo
+            contentColor = Color.Black          // Cambia el color del texto
         ),
         onClick = {
             calendarState.show()
         }
     ) {
-        Text(text = diaFormateado.toString())
+        Text(text = diaFormateado.toString(),
+            fontSize = 20.sp)
     }
 }
 
@@ -313,16 +341,22 @@ fun CalendarioHora(logicaAddTarea: LogicaAddTarea, modifier: Modifier = Modifier
     }
 
     Button(
-        modifier = Modifier,
+        modifier = Modifier.width(300.dp)
+        .border(
+            width = 2.dp,                     // Ancho del borde
+    color = Color.Black,              // Color del borde
+    shape = RoundedCornerShape(10.dp)
+    ),
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFFF375F), // Cambia el color de fondo
-            contentColor = Color.White          // Cambia el color del texto
+            containerColor = Color(0xFFFFFFFF), // Cambia el color de fondo
+            contentColor = Color.Black          // Cambia el color del texto
         ),
         onClick = {
             clockState.show()
         }
     ) {
-        Text(text = horaFormateada.toString())
+        Text(text = horaFormateada.toString(),
+            fontSize = 20.sp)
     }
 }
 

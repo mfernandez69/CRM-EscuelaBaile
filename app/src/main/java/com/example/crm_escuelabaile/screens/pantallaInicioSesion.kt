@@ -56,12 +56,16 @@ fun PantallaInicioSesion(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+    Box(
+        modifier = Modifier
+    ){
+        Image(
+            modifier = Modifier.size(250.dp),
+            painter = painterResource(id = R.drawable.logo_shake_it),
+            contentDescription = null
+        )
+    }
 
-            Text(
-                text = "¡Hola!",
-                fontSize = 64.sp,
-
-                )
             Spacer(modifier = Modifier.height(35.dp))
             Text(
                 text = "Iniciar sesion en la aplicación",
