@@ -87,11 +87,6 @@ fun MenuLateral(
             unselectedIcon = Icons.Outlined.Face
         ),
         NavigationItem(
-            title = "Ajustes",
-            selectedIcon = Icons.Filled.Build,
-            unselectedIcon = Icons.Outlined.Build
-        ),
-        NavigationItem(
             title = "Cerrar sesión",
             selectedIcon = Icons.Filled.ExitToApp,
             unselectedIcon = Icons.Outlined.ExitToApp
@@ -149,8 +144,7 @@ fun MenuLateral(
                                 1 -> navController.navigate("pantallaPago")
                                 2 -> navController.navigate("pantallaAgenda")
                                 3 -> navController.navigate("pantallaAlumnos")
-                                4 -> navController.navigate("")
-                                5 -> {
+                                4 -> {
                                     logicaInicioSesion.cerrarSesion()
                                     navController.navigate("pantallaInicioSesion") {
                                         //Evitamos que el usuario pueda volver a pantallas que requieren autentificacion
