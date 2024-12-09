@@ -44,6 +44,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -215,6 +216,7 @@ private fun AlumnoBusquedaItem(alumno: Alumno, logicaAlumnos: LogicaAlumnos) {
                 mostrarPopup = true
                 logicaAlumnos.setAlumnoMostrando(alumno)
             }
+            .clip(RoundedCornerShape(46.dp)) // Bordes redondeados
     ) {
         Column(
             modifier = Modifier
@@ -225,11 +227,9 @@ private fun AlumnoBusquedaItem(alumno: Alumno, logicaAlumnos: LogicaAlumnos) {
                 modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically
             ){
-                Icon(
-                    imageVector = Icons.Filled.AccountBox,
-                    contentDescription = "name"
-                )
-                Text(text = alumno.nombre, fontSize = 20.sp)
+
+                Text(text = alumno.nombre, fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold)
 
             }
             Spacer(modifier = Modifier.height(15.dp))
@@ -237,44 +237,17 @@ private fun AlumnoBusquedaItem(alumno: Alumno, logicaAlumnos: LogicaAlumnos) {
                modifier = Modifier,
                verticalAlignment = Alignment.CenterVertically
            ) {
-               Icon(
-                   imageVector = Icons.Filled.Email,
-                   contentDescription = "name"
-               )
+
                Text(text = alumno.email
                    , fontSize = 20.sp)
 
 
            }
             Spacer(modifier = Modifier.height(15.dp))
-            Row(
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(
-                    imageVector = Icons.Filled.Face,
-                    contentDescription = "name"
-                )
-                Text(text = alumno.dni
-                    , fontSize = 20.sp)
 
-            }
-            Spacer(modifier = Modifier.height(15.dp))
-            Row(
-                modifier = Modifier,
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Icon(
-                    imageVector = Icons.Filled.DateRange,
-                    contentDescription = "name"
-                )
-                Text(text = fechaNacimientoFormateada
-                    , fontSize = 20.sp)
-
-            }
-            Spacer(modifier = Modifier.height(15.dp))
         }
     }
+    Spacer(modifier = Modifier.height(15.dp))
     if (mostrarPopup) {
         PopupAlumno(
             onDismissRequest = { mostrarPopup = false },

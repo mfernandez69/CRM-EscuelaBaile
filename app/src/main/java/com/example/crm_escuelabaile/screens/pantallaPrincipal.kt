@@ -371,19 +371,18 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
         }
     }
 
-
 }
 
 fun colorLeidaNoLeida(notificacion: Notificacion): Color {
 
     var colorNotificacion = Color.White
 
-    /*if(notificacion.leida){
+    if(notificacion.leida){
         colorNotificacion = Color(0xFFC9CBCB)
     }
     else{
         colorNotificacion = Color(0xFFACAFAF)
 
-    }*/
+    }
     return colorNotificacion
 }
