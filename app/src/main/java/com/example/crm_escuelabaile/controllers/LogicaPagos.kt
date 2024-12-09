@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.crm_escuelabaile.models.Alumno
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,12 +23,19 @@ class LogicaPagos : ViewModel() {
     private val _AlumnosQuePagaron = MutableStateFlow<List<Alumno>>(emptyList())
     val AlumnosQuePagaron: StateFlow<List<Alumno>> = _AlumnosQuePagaron
 
+    val _alumnoMostrando = MutableStateFlow(Alumno())
+    val alumnoMostrando: StateFlow<Alumno> = _alumnoMostrando.asStateFlow()
+
     private val _cantidadNoPagos = MutableStateFlow(0)
     val cantidadNoPagos: StateFlow<Int> = _cantidadNoPagos.asStateFlow()
 
     init {
         Log.d("LogicaPagos", "Inicializando ViewModel")
         cargarAlumnos()
+    }
+
+    fun setAlumnoMostrando(value: Alumno){
+        _alumnoMostrando.value = value
     }
 
     private fun cargarAlumnos() {
@@ -55,4 +63,15 @@ class LogicaPagos : ViewModel() {
             emptyList()
         }
     }
+
+    suspend fun getNombreClase(clase: DocumentReference): String {
+        return try {
+            val document = clase.get().await()
+            document.getString("nombre") ?: "Nombre no disponible"
+        } catch (e: Exception) {
+            Log.e("Error clases", "Hubo un error obteniendo el nombre de la clase", e)
+            "Error al obtener nombre"
+        }
+    }
+
 }

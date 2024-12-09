@@ -2,12 +2,15 @@ package com.example.crm_escuelabaile.screens
 
 import NotificacionViewModel
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,10 +18,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,19 +33,26 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.crm_escuelabaile.controllers.LogicaAlumnos
 import com.example.crm_escuelabaile.controllers.LogicaInicioSesion
 import com.example.crm_escuelabaile.controllers.LogicaMenu
 import com.example.crm_escuelabaile.controllers.LogicaPagos
@@ -114,7 +126,9 @@ fun PagosTabLayout(logicaPagos: LogicaPagos) {
                 selected = pagerState.currentPage == 0,
                 onClick = { coroutineScope.launch { pagerState.animateScrollToPage(0) } }
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.padding(10.dp),
+                    verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = "Sin pagar",
                         color = Color.Black
@@ -138,6 +152,7 @@ fun PagosTabLayout(logicaPagos: LogicaPagos) {
             }
 
             Tab(
+                modifier = Modifier.padding(10.dp),
                 selected = pagerState.currentPage == 1,
                 onClick = { coroutineScope.launch { pagerState.animateScrollToPage(1) } }
             ) {
@@ -192,19 +207,36 @@ fun AlumnosQuePagaron(logicaPagos: LogicaPagos) {
 
 @Composable
 fun AlumnoItem(alumno: Alumno, logicaPagos: LogicaPagos, esPagado: Boolean) {
+    val fechaNacimientoFormateada = alumno.fechaDeNacimiento?.let { timestamp ->
+        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        sdf.format(timestamp.toDate())
+    } ?: "Sin fecha"
+    var mostrarPopup by remember { mutableStateOf(false) }
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
+            .clickable {
+                mostrarPopup = true
+                logicaPagos.setAlumnoMostrando(alumno)
+            },
+                colors = CardDefaults.cardColors(
+                containerColor = Color.White, // Fondo del Card
+                contentColor = Color.Black // Color del contenido
+    )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
+
         ) {
-            Text(text = "Nombre: ${alumno.nombre}", fontWeight = FontWeight.Bold)
+            Text(text = "Nombre: ${alumno.nombre}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp)
+            Spacer(modifier = Modifier.height(10.dp))
             Text(text = "Email: ${alumno.email}")
-            Text(text = "DNI: ${alumno.dni}")
+            /*Text(text = "DNI: ${alumno.dni}")
             alumno.fechaDeNacimiento?.let { fecha ->
                 Text(
                     text = "Fecha de Nacimiento: ${
@@ -214,6 +246,76 @@ fun AlumnoItem(alumno: Alumno, logicaPagos: LogicaPagos, esPagado: Boolean) {
                         ).format(fecha.toDate())
                     }"
                 )
+            }*/
+        }
+    }
+    if (mostrarPopup) {
+        PopupAlumno(
+            onDismissRequest = { mostrarPopup = false },
+            logicaPagos = logicaPagos,
+            alumno = alumno,
+            fechaNacimientoFormateada = fechaNacimientoFormateada
+        )
+    }
+}
+
+
+@Composable
+fun PopupAlumno(
+    onDismissRequest: () -> Unit,
+    logicaPagos: LogicaPagos,
+    alumno: Alumno,
+    fechaNacimientoFormateada: String
+) {
+    Dialog(onDismissRequest = onDismissRequest) {
+        // Draw a rectangle shape with rounded corners inside the dialog
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(375.dp)
+                .padding(16.dp),
+            shape = RoundedCornerShape(16.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(10.dp),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(text = "Nombre: ${alumno.nombre}", fontWeight = FontWeight.Bold)
+                Text(text = "Email: ${alumno.email}")
+                Text(text = "DNI: ${alumno.dni}")
+                Text(text = "Fecha de Nacimiento: $fechaNacimientoFormateada")
+                if (alumno.estadoPago){
+                    Text(text = "Clases pagadas")
+                }
+                else{
+                    Text(text = "Pagos no realizados")
+                }
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    item {
+                        Text(
+                            text = "Clases: "
+                        )
+                    }
+                    items(alumno.clases) { clase ->
+                        val nombreClase by produceState(initialValue = "Cargando...") {
+                            value = logicaPagos.getNombreClase(clase)
+                        }
+                        Text(text = "- $nombreClase")
+                    }
+                }
+
+                TextButton(
+                    onClick = onDismissRequest,
+                    modifier = Modifier.padding(8.dp),
+                ) {
+                    Text("Cerrar")
+                }
             }
         }
     }
