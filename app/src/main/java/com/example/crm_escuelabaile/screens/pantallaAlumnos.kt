@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -167,7 +168,8 @@ private fun BusquedaAlumno(logicaAlumnos: LogicaAlumnos = viewModel()){
     ) {
         LazyColumn(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (nombre.isNotEmpty()){
 
@@ -194,7 +196,8 @@ private fun ResultadosBusqueda(logicaAlumnos: LogicaAlumnos = viewModel()){
     } else {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(alumnos) { alumno ->
                 AlumnoBusquedaItem(alumno = alumno, logicaAlumnos = logicaAlumnos)
@@ -212,12 +215,17 @@ private fun AlumnoBusquedaItem(alumno: Alumno, logicaAlumnos: LogicaAlumnos) {
     } ?: "Sin fecha"
     Card(
         modifier = Modifier
-            .fillMaxWidth()
+            .width(300.dp)
             .clickable {
                 mostrarPopup = true
                 logicaAlumnos.setAlumnoMostrando(alumno)
             }
-            .clip(RoundedCornerShape(46.dp)) // Bordes redondeados
+            .border(
+                width = 2.dp,
+                color = borderColorCard(),
+                shape = RoundedCornerShape(10.dp)
+            ),
+
     ) {
         Column(
             modifier = Modifier
@@ -334,3 +342,4 @@ fun PopupAlumno(
         }
     }
 }
+

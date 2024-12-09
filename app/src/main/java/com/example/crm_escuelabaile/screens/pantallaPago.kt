@@ -2,6 +2,7 @@ package com.example.crm_escuelabaile.screens
 
 import NotificacionViewModel
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -61,6 +62,7 @@ import com.example.crm_escuelabaile.utils.MenuLateral
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.random.Random
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -219,12 +221,14 @@ fun AlumnoItem(alumno: Alumno, logicaPagos: LogicaPagos, esPagado: Boolean) {
             .clickable {
                 mostrarPopup = true
                 logicaPagos.setAlumnoMostrando(alumno)
-            },
-                colors = CardDefaults.cardColors(
-                containerColor = Color.White, // Fondo del Card
-                contentColor = Color.Black // Color del contenido
+            }
+            .border(
+            width = 2.dp,
+            color = borderColorCard(),
+            shape = RoundedCornerShape(10.dp)
     )
-    ) {
+    )
+    {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -319,4 +323,14 @@ fun PopupAlumno(
             }
         }
     }
+}
+
+public fun borderColorCard(): Color {
+    val colores = arrayOf(0xFF26BFBF,0xFF89AFFF,0xFFFFB017,0xFF26874E)
+
+    val aleatorio = Random.nextInt(colores.size)
+
+    val colorBorde = Color(colores[aleatorio])
+
+    return colorBorde
 }
