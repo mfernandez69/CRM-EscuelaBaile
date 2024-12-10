@@ -85,6 +85,7 @@ fun PantallaInicioSesion(
                 value = email,
                 //Pasamos el valor del email en el input a la funcion de la logica
                 onValueChange = { logicaInicioSesion.onEmailChange(it) },
+                keyboardOptions = KeyboardOptions( imeAction = ImeAction.Go ),
                 label = { Text("EMAIL") },
                 trailingIcon = {
                     Icon(
@@ -117,16 +118,9 @@ fun PantallaInicioSesion(
 
                 onValueChange = { logicaInicioSesion.onPasswordChange(it) },
                 visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions( imeAction = ImeAction.Search ),
-                keyboardActions = KeyboardActions( onSearch = { logicaInicioSesion.iniciarSesion() } ),
+                keyboardOptions = KeyboardOptions( imeAction = ImeAction.Go ),
+                keyboardActions = KeyboardActions( onGo = { logicaInicioSesion.iniciarSesion() } ),
                 label = { Text("PASSWORD") },
-                /*trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Lock, // Cambia este ícono según lo necesites
-                        contentDescription = "Icono de validación",
-                        tint = Color.Black // Color del ícono
-                    )
-                }*/
                 trailingIcon = {
                     val image = if (passwordVisible)
                         R.drawable.visibility
