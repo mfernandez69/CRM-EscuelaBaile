@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -103,6 +104,7 @@ fun PantallaPrincipal(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
+                Spacer(modifier = Modifier.size(5.dp))
                 NotificacionesTabLayout(notificacionViewModel)
             }
         }
@@ -139,7 +141,6 @@ fun NotificacionesTabLayout(notificacionViewModel: NotificacionViewModel) {
                 }
             ) {
                 val scope = rememberCoroutineScope()
-
                 Tab(
                     selected = pagerState.currentPage == 0,
                     onClick = {

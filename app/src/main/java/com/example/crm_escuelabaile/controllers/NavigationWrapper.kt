@@ -11,7 +11,7 @@ import com.example.crm_escuelabaile.screens.*
 @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 @Composable
 fun NavigationWrapper(navHostController: NavHostController) {
-    NavHost(navController = navHostController, startDestination = "pantallaPago") {
+    NavHost(navController = navHostController, startDestination = "pantallaInicioSesion") {
         composable("pantallaInicioSesion") {
             PantallaInicioSesion(navHostController)
         }
