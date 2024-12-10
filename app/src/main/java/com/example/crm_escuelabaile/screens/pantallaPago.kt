@@ -209,6 +209,7 @@ fun AlumnosQuePagaron(logicaPagos: LogicaPagos) {
 
 @Composable
 fun AlumnoItem(alumno: Alumno, logicaPagos: LogicaPagos, esPagado: Boolean) {
+    val borderColor = remember{borderColorCard()}
     val fechaNacimientoFormateada = alumno.fechaDeNacimiento?.let { timestamp ->
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         sdf.format(timestamp.toDate())
@@ -224,7 +225,7 @@ fun AlumnoItem(alumno: Alumno, logicaPagos: LogicaPagos, esPagado: Boolean) {
             }
             .border(
             width = 2.dp,
-            color = borderColorCard(),
+            color = borderColor,
             shape = RoundedCornerShape(10.dp)
     )
     )

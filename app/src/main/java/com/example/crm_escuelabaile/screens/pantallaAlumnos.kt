@@ -209,6 +209,7 @@ private fun ResultadosBusqueda(logicaAlumnos: LogicaAlumnos = viewModel()){
 @Composable
 private fun AlumnoBusquedaItem(alumno: Alumno, logicaAlumnos: LogicaAlumnos) {
     var mostrarPopup by remember { mutableStateOf(false) }
+    val borderColor = remember{borderColorCard()}
     val fechaNacimientoFormateada = alumno.fechaDeNacimiento?.let { timestamp ->
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         sdf.format(timestamp.toDate())
@@ -223,10 +224,9 @@ private fun AlumnoBusquedaItem(alumno: Alumno, logicaAlumnos: LogicaAlumnos) {
             }
             .border(
                 width = 2.dp,
-                color = borderColorCard(),
+                color = borderColor,
                 shape = RoundedCornerShape(10.dp)
             ),
-
     ) {
         Column(
             modifier = Modifier
