@@ -19,6 +19,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -30,6 +31,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -47,12 +49,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.crm_escuelabaile.R
 import com.example.crm_escuelabaile.controllers.LogicaInicioSesion
 import com.example.crm_escuelabaile.controllers.LogicaMenu
 import com.example.crm_escuelabaile.models.Notificacion
@@ -321,6 +325,7 @@ fun NotificacionesTodasScreen(notificacionViewModel: NotificacionViewModel){
 fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: NotificacionViewModel) {
     //Creamos una card para cada notificacion con la info del objeto
     var elegirColorNotificacion = colorLeidaNoLeida(notificacion)
+    var iconoBoton = notificacionViewModel.leidaNoLeida(notificacion)
 
     val fechaFormateada = notificacion.fecha?.let { timestamp ->
         val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
@@ -357,7 +362,22 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(text = notificacion.email ?: "Sin email")
-                Button(
+                IconButton(
+                    onClick = {
+                        notificacionViewModel.marcarLeido(notificacion)
+                    },
+                    /*colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = Color(0xFFFDB1C2),
+                        contentColor = Color.Black
+                    )*/
+                ) {
+                    Icon(
+                        painter = painterResource(id = iconoBoton),
+                        contentDescription = "Icono de leido",
+                        tint = Color.Black
+                    )
+                }
+                /*Button(
                     onClick = {
                         notificacionViewModel.marcarLeido(notificacion)
                     },
@@ -367,7 +387,7 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
                     )
                 ) {
                     Text(text = notificacionViewModel.leidaNoLeida(notificacion))
-                }
+                }*/
             }
         }
     }

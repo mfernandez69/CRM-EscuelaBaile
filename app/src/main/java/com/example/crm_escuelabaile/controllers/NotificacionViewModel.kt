@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.crm_escuelabaile.R
 import com.example.crm_escuelabaile.models.Notificacion
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
@@ -108,14 +109,18 @@ class NotificacionViewModel : ViewModel() {
     }
 
     @Composable
-    public fun leidaNoLeida(notificacion: Notificacion): String {
-        var textoNotificacion = "";
+    public fun leidaNoLeida(notificacion: Notificacion): Int {
+        var textoNotificacion = ""
+        var iconoNotificacion: Int?
         if (notificacion.leida) {
-            textoNotificacion = "Marcar como no leida"
+            iconoNotificacion = R.drawable.markunread
+//            textoNotificacion = "Marcar como no leida"
+
         } else {
-            textoNotificacion = "Marcar como leida"
+            iconoNotificacion = R.drawable.markread
+//            textoNotificacion = "Marcar como leida"
         }
-        return textoNotificacion
+        return iconoNotificacion
     }
 
 }
