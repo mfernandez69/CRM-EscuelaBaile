@@ -379,10 +379,10 @@ fun colorLeidaNoLeida(notificacion: Notificacion): Color {
     var colorNotificacion = Color.White
 
     if(notificacion.leida){
-        colorNotificacion = Color(0xFFC9CBCB)
+        colorNotificacion = Color(0xFFEEEEEE)
     }
     else{
-        colorNotificacion = Color(0xFFACAFAF)
+        colorNotificacion = Color(0xFFFFFFFF)
 
     }
     return colorNotificacion
