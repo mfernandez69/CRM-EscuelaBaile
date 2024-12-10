@@ -196,8 +196,8 @@ private fun ResultadosBusqueda(logicaAlumnos: LogicaAlumnos = viewModel()){
     } else {
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxSize()
+                .padding(16.dp)
         ) {
             items(alumnos) { alumno ->
                 AlumnoBusquedaItem(alumno = alumno, logicaAlumnos = logicaAlumnos)
@@ -215,7 +215,8 @@ private fun AlumnoBusquedaItem(alumno: Alumno, logicaAlumnos: LogicaAlumnos) {
     } ?: "Sin fecha"
     Card(
         modifier = Modifier
-            .width(300.dp)
+            .fillMaxWidth()
+            .padding(8.dp)
             .clickable {
                 mostrarPopup = true
                 logicaAlumnos.setAlumnoMostrando(alumno)
@@ -230,33 +231,28 @@ private fun AlumnoBusquedaItem(alumno: Alumno, logicaAlumnos: LogicaAlumnos) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(26.dp)
+                .padding(8.dp)
         ) {
             Row(
                 modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically
             ){
 
-                Text(text = alumno.nombre, fontSize = 20.sp,
+                Text(text = alumno.nombre, fontSize = 16.sp,
                     fontWeight = FontWeight.Bold)
 
             }
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(10.dp))
            Row(
                modifier = Modifier,
                verticalAlignment = Alignment.CenterVertically
            ) {
 
-               Text(text = alumno.email
-                   , fontSize = 20.sp)
-
+               Text(text = alumno.email)
 
            }
-            Spacer(modifier = Modifier.height(15.dp))
-
         }
     }
-    Spacer(modifier = Modifier.height(15.dp))
     if (mostrarPopup) {
         PopupAlumno(
             onDismissRequest = { mostrarPopup = false },
