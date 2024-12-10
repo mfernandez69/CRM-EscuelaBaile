@@ -2,16 +2,17 @@ package com.example.crm_escuelabaile.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,6 +23,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,6 +44,8 @@ fun PantallaInicioSesion(
     val email by logicaInicioSesion.email.collectAsState()
     val password by logicaInicioSesion.password.collectAsState()
     val estadoInicioSesion by logicaInicioSesion.estadoInicioSesion.collectAsState()
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
+
 
     Box(modifier = Modifier.fillMaxSize()){
         Image(
@@ -108,14 +114,34 @@ fun PantallaInicioSesion(
 
             TextField(
                 value = password,
+
                 onValueChange = { logicaInicioSesion.onPasswordChange(it) },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions( imeAction = ImeAction.Search ),
+                keyboardActions = KeyboardActions( onSearch = { logicaInicioSesion.iniciarSesion() } ),
                 label = { Text("PASSWORD") },
-                trailingIcon = {
+                /*trailingIcon = {
                     Icon(
                         imageVector = Icons.Filled.Lock, // Cambia este ícono según lo necesites
                         contentDescription = "Icono de validación",
                         tint = Color.Black // Color del ícono
                     )
+                }*/
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        R.drawable.visibility
+                    else R.drawable.visibilityoff
+
+                    // Please provide localized description for accessibility services
+                    val description = if (passwordVisible) "Ocultar contraseña" else "Mostrar contraseña"
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible } ){
+                        Icon(
+                            painter = painterResource(id = image),
+                            contentDescription = description,
+                            tint = Color.Black
+                        )
+                    }
                 },
                 shape = RoundedCornerShape(30.dp),
                 colors = TextFieldDefaults.textFieldColors(
@@ -148,14 +174,12 @@ fun PantallaInicioSesion(
                 modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically
             ){
-
-                    Text(
-                        text = "Iniciar sesion",
-                        modifier = Modifier
-                            .clickable { logicaInicioSesion.iniciarSesion() },
-                        fontSize = 30.sp
-
-                    )
+                Text(
+                    text = "Iniciar sesion",
+                    modifier = Modifier
+                        .clickable { logicaInicioSesion.iniciarSesion() },
+                    fontSize = 30.sp
+                )
                 Button(
                     onClick = { logicaInicioSesion.iniciarSesion() },
                     colors = ButtonDefaults.buttonColors(
