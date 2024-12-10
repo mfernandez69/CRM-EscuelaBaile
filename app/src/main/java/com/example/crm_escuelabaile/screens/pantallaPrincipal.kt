@@ -327,11 +327,6 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
     var elegirColorNotificacion = colorLeidaNoLeida(notificacion)
     var iconoBoton = notificacionViewModel.leidaNoLeida(notificacion)
 
-    val fechaFormateada = notificacion.fecha?.let { timestamp ->
-        val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        sdf.format(timestamp.toDate())
-    } ?: "Sin fecha"
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -365,11 +360,8 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
                 IconButton(
                     onClick = {
                         notificacionViewModel.marcarLeido(notificacion)
-                    },
-                    /*colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color(0xFFFDB1C2),
-                        contentColor = Color.Black
-                    )*/
+
+                    }
                 ) {
                     Icon(
                         painter = painterResource(id = iconoBoton),
@@ -377,17 +369,6 @@ fun NotificacionItem(notificacion: Notificacion, notificacionViewModel: Notifica
                         tint = Color.Black
                     )
                 }
-                /*Button(
-                    onClick = {
-                        notificacionViewModel.marcarLeido(notificacion)
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFFDB1C2),
-                        contentColor = Color.Black
-                    )
-                ) {
-                    Text(text = notificacionViewModel.leidaNoLeida(notificacion))
-                }*/
             }
         }
     }

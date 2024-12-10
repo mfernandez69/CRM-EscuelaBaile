@@ -95,12 +95,14 @@ class NotificacionViewModel : ViewModel() {
         try {
             val notificacionDocument = coleccion.document(notificacion.id)
 
-            if (notificacion.leida) {
-                notificacion.leida = false
-                notificacionDocument.update("leida", false)
-            } else {
-                notificacion.leida = true
-                notificacionDocument.update("leida", true)
+            val nuevoEstado = !notificacion.leida
+            notificacionDocument.update("leida", nuevoEstado)
+
+            val index = _notificaciones.value.indexOfFirst { it.id == notificacion.id }
+            if (index != -1) {
+                val nuevaLista = _notificaciones.value.toMutableList()
+                nuevaLista[index] = nuevaLista[index].copy(leida = nuevoEstado)
+                _notificaciones.value = nuevaLista
             }
             cargarNotificaciones()
         } catch (e: Exception) {
