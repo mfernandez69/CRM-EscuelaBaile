@@ -20,7 +20,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -33,8 +32,6 @@ import androidx.compose.ui.Alignment
 import androidx.navigation.NavHostController
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import java.time.Instant
-import java.time.ZoneId
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.FabPosition
@@ -47,7 +44,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -56,7 +52,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.crm_escuelabaile.controllers.LogicaAgenda
 import com.example.crm_escuelabaile.controllers.LogicaInicioSesion
 import com.example.crm_escuelabaile.controllers.LogicaMenu
-import com.example.crm_escuelabaile.models.Notificacion
 import com.example.crm_escuelabaile.models.Tarea
 import com.example.crm_escuelabaile.utils.MenuLateral
 import kotlinx.coroutines.launch
@@ -64,7 +59,6 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import com.google.firebase.Timestamp
 import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
@@ -159,7 +153,7 @@ fun SeccionCalendario(navHostController: NavHostController, logicaAgenda: Logica
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(450.dp)
+                .weight(1.2f)
         ) {
             DatePicker(
                 state = datePickerState,
@@ -168,8 +162,6 @@ fun SeccionCalendario(navHostController: NavHostController, logicaAgenda: Logica
                 modifier = Modifier.fillMaxSize()
             )
         }
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         Box(
             modifier = Modifier
