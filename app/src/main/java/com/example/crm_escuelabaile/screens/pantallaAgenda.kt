@@ -153,7 +153,7 @@ fun SeccionCalendario(navHostController: NavHostController, logicaAgenda: Logica
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(1.2f)
+                .weight(1.25f)
         ) {
             DatePicker(
                 state = datePickerState,
