@@ -60,6 +60,7 @@ import com.example.crm_escuelabaile.controllers.LogicaPagos
 import com.example.crm_escuelabaile.models.Alumno
 import com.example.crm_escuelabaile.utils.MenuLateral
 import kotlinx.coroutines.launch
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.random.Random
@@ -227,7 +228,7 @@ fun AlumnoItem(alumno: Alumno, logicaPagos: LogicaPagos, esPagado: Boolean) {
             width = 2.dp,
             color = borderColor,
             shape = RoundedCornerShape(10.dp)
-    )
+        )
     )
     {
         Column(
@@ -272,56 +273,107 @@ fun PopupAlumno(
     alumno: Alumno,
     fechaNacimientoFormateada: String
 ) {
+    var textoEstadoPago: String
+    val tamanoLetra = 15.sp
+    var colorEstadoPago: Color
     Dialog(onDismissRequest = onDismissRequest) {
         // Draw a rectangle shape with rounded corners inside the dialog
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(375.dp)
-                .padding(16.dp),
+                .height(375.dp),
             shape = RoundedCornerShape(16.dp),
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(10.dp),
-                verticalArrangement = Arrangement.Center,
+                    .padding(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "Nombre: ${alumno.nombre}", fontWeight = FontWeight.Bold)
-                Text(text = "Email: ${alumno.email}")
-                Text(text = "DNI: ${alumno.dni}")
-                Text(text = "Fecha de Nacimiento: $fechaNacimientoFormateada")
-                if (alumno.estadoPago){
-                    Text(text = "Clases pagadas")
-                }
-                else{
-                    Text(text = "Pagos no realizados")
+                Text(
+                    text = "Nombre: ${alumno.nombre} ",
+                    fontWeight = FontWeight.Bold, fontSize = 16.sp,
+                    modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)
+                )
+                Column(
+                    modifier = Modifier.fillMaxSize()
+                        .weight(1f)
+                ) {
+
+                    Text(
+                        text = "Email: ${alumno.email}",
+                        fontSize = tamanoLetra,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    Text(
+                        text = "DNI: ${alumno.dni}",
+                        fontSize = tamanoLetra,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    Text(
+                        text = "Fecha de Nacimiento: $fechaNacimientoFormateada",
+                        fontSize = tamanoLetra,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    if (alumno.estadoPago) {
+                        textoEstadoPago = "Clases pagadas"
+                        colorEstadoPago = Color(0xFF2AD735)
+                    } else {
+                        textoEstadoPago = "Pagos no realizados"
+                        colorEstadoPago = Color(0xFFB54747)
+                    }
+                    Text(
+                        text = textoEstadoPago,
+                        fontSize = tamanoLetra,
+                        color = colorEstadoPago,
+                        modifier = Modifier.padding(bottom = 5.dp)
+                    )
+
                 }
 
-                LazyColumn(
+                Column (
                     modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    item {
-                        Text(
-                            text = "Clases: "
-                        )
-                    }
-                    items(alumno.clases) { clase ->
-                        val nombreClase by produceState(initialValue = "Cargando...") {
-                            value = logicaPagos.getNombreClase(clase)
+                        .weight(0.75f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Text(
+                        text = "Clases: ",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+
+                        items(alumno.clases) { clase ->
+                            val nombreClase by produceState(initialValue = "Cargando...") {
+                                value = logicaPagos.getNombreClase(clase)
+                            }
+                            Text(
+                                text = "- $nombreClase",
+                                fontSize = tamanoLetra,
+                                modifier = Modifier.padding(bottom = 5.dp)
+                            )
                         }
-                        Text(text = "- $nombreClase")
                     }
                 }
 
-                TextButton(
-                    onClick = onDismissRequest,
-                    modifier = Modifier.padding(8.dp),
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(0.25f),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text("Cerrar")
+                    TextButton(
+                        onClick = onDismissRequest,
+                    ) {
+                        Text("Cerrar")
+                    }
                 }
             }
+
         }
     }
 }
